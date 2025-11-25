@@ -1,6 +1,8 @@
 #include <iostream>
 #include <iomanip>
+#include <string>
 #include <fstream>
+#include "textos.hpp"
 using namespace std;
 
 struct Musica{
@@ -8,7 +10,7 @@ struct Musica{
     string artista;
     string duracao;
     int ano;
-    int views;
+    long long views;
     double media_views;
     string descricao;
 };
@@ -24,7 +26,7 @@ void Realocacao(Musica* &musica, int tamanho_anterior){
     
 }
 
-Musica* Leitura_csv(Musica *musica, string nome_arquivo, int &capacidade){
+Musica* Leitura_csv(Musica *musica, string nome_arquivo, int &capacidade, int &numero_de_musicas){
     ifstream entrada_csv(nome_arquivo);
     int i = 0;
     char lixo;
@@ -57,109 +59,173 @@ Musica* Leitura_csv(Musica *musica, string nome_arquivo, int &capacidade){
         // Recebe o nome do artista
         entrada_csv >> lixo;
         getline(entrada_csv, musica[i].descricao, '\"');
-        
+
         // Encremento do endereço
-        i++;
+        i++;  
 
         if(i == capacidade){
             Realocacao(musica, capacidade);
             capacidade +=5 ;
         }
+        
     }
 
+    numero_de_musicas = i;
     return musica;
 }
 
-void Menu(int numero){
+void imprime_formatado(const string &texto) {
+    const int LIMITE = 47;
+    bool controle = true;
+    int pos = 0;
 
-    switch (numero){
-    case 0:
-        cout << "---------------------- MENU ----------------------" << endl;
-        cout << "(1) Exibir músicas" << endl;
-        cout << "(2) Buscar na playlist" << endl;
-        cout << "(3) Adicionar nova música à playlist" << endl;
-        cout << "(4) Remover música da playlist" << endl;
-        cout << "(5) Sair da aplicação" << endl;
-        cout << "--------------------------------------------------" << endl;
-        break;
-    case 10:
-        cout << "--------------------------------------------------" << endl;
-        cout << "(1) Exibir playlist completa" << endl;
-        cout << "(2) Exibir parte da playlist" << endl;
-        cout << "--------------------------------------------------" << endl;
-        break;
-    case 20:
-        cout << "--------------------------------------------------" << endl;
-        cout << "(1) Buscar pelo nome da música" << endl;
-        cout << "(2) Buscar músicas pelo nome do artista" << endl;
-        cout << "(3) Buscar pela letra da parte mais repetida" << endl;
-        cout << "--------------------------------------------------" << endl;
-        break;
-    case 30:
-        /* code */
-        break;
-    
-    default:
-        break;
-    }
+    while (pos < texto.size() and controle) {
+        int fim = pos + LIMITE;
 
-    /*
-    --------------------------------------------------
-    X - Salvar alterações
-    --------------------------------------------------
-    */
-}
+        if (fim >= texto.size() and controle) {
+            cout << texto.substr(pos) << "\n   ";
+            controle = false;
+        }
 
+        if (texto[fim] == ' ' and controle) {
+            cout << texto.substr(pos, LIMITE) << "\n   ";
+            pos += LIMITE + 1;
+        }
+        else if (controle){
+            int quebra = fim;
+            while (quebra > pos && texto[quebra] != ' ')
+                quebra--;
 
-void Enunciados(int numero, int auxiliar1 = 0, int auxiliar2 = 0){
-    switch (numero)
-    {
-    case 101:
-        cout << "--------------------------------------------------" << endl;
-        cout << "Digite um índice entre 1 e " << auxiliar1 << ": ";
-        break;
-    case 102:
-        cout << "--------------------------------------------------" << endl;
-        cout << "Digite outro índice entre 1 e " << auxiliar1 << ": ";
-        break;
-    case 201:
-        cout << "--------------------------------------------------" << endl;
-        cout << "Insira o nome ou um trecho do nome da música: ";
-        break;
-    case 202:
-        cout << "--------------------------------------------------" << endl;
-        cout << "Insira o nome do artista: ";
-        break;
-    case 203:
-        cout << "--------------------------------------------------" << endl;
-        cout << "Insira o trecho da música: ";
-        break;
-    case 111:
-        /* code  */
-        break;
-    
-    default:
-        break;
+            if (quebra == pos)
+                quebra = fim;
+
+            cout << texto.substr(pos, quebra - pos) << "\n   ";
+
+            pos = quebra;
+            while (pos < texto.size() && texto[pos] == ' ')
+                pos++;
+        }
     }
 }
 
-void Mensagem_de_erro(int erro){
-    switch (erro){
-    case 101:
-        cout << "--------------------------------------------------" << endl;
-        cout << "Essa opção é inválida, digite uma opção dentre as \nopções listadas." << endl;
-        break;
-    
-    case 201:
-        cout << "--------------------------------------------------" << endl;
-        cout << "Índice inválido, por favor insira um índice entre\nos limites solicitados." << endl;
-        break;
-    
-    default:
-        cout << "--------------------------------------------------" << endl;
-        cout << "ERRO INVÁLIDO" << endl;
-        break;
+void Exibe_banco_de_dados(Musica* &musica, int num_musicas){
+    for(int i = 0; i < num_musicas; i++){
+        cout << "Nome: " << musica[i].nome << "\n"
+                 << "Artista: " << musica[i].artista << "\n"
+                 << "Duração: " << musica[i].duracao << "\n"
+                 << "Ano: " << musica[i].ano << "\n"
+                 << "Views: " << musica[i].views << "\n"
+                 << "Media de views por ano: " << fixed << setprecision(4) << musica[i].media_views << "\n"
+                 << "Parte mais reproduzida: \n   ";
+                 imprime_formatado(musica[i].descricao);
+                 cout << endl << "--------------------------------------------------\n";
     }
+}
+
+string minusculo(string s){
+    for(int i = 0; i < s.size(); i++){
+        if(s[i] >= 'A' and s[i] <= 'Z'){
+            s[i] = s[i] + 32;    
+        }
+    }
+    return s;
+}
+
+bool achar_posicao(string texto, string trecho){
+    return texto.find(trecho) < texto.size();
+}
+
+void BuscaPorNome(Musica *musica, int capacidade){
+    cin.ignore();
+    string trecho;
+    Enunciados(201);
+    getline(cin, trecho);
+    trecho = minusculo(trecho);
+
+    bool achou = false;
+    cout << "--------------------------------------------------\n";
+
+    for(int i = 0; i < capacidade; i++){
+        string nome = minusculo(musica[i].nome);
+
+        if(achar_posicao(nome, trecho)){
+            achou = true;
+            cout << "Nome: " << musica[i].nome << "\n"
+                 << "Artista: " << musica[i].artista << "\n"
+                 << "Duração: " << musica[i].duracao << "\n"
+                 << "Ano: " << musica[i].ano << "\n"
+                 << "Views: " << musica[i].views << "\n"
+                 << "Media de views por ano: " << fixed << setprecision(4) << musica[i].media_views << "\n"
+                 << "Parte mais reproduzida: \n   ";
+                 imprime_formatado(musica[i].descricao);
+                 cout << endl << "--------------------------------------------------\n";
+        }
+    }
+
+    if(!achou)
+        cout << "Nenhuma música encontrada com esse nome.\n";
+}
+
+void BuscaPorArtista(Musica *musica, int capacidade){
+    cin.ignore();
+    string trecho;
+    Enunciados(202);
+    getline(cin, trecho);
+    trecho = minusculo(trecho);
+
+    bool achou = false;
+    cout << "--------------------------------------------------\n";
+
+    for(int i = 0; i < capacidade; i++){
+        string artista = minusculo(musica[i].artista);
+
+        if(achar_posicao(artista, trecho)){
+            achou = true;
+            cout << "Nome: " << musica[i].nome << "\n"
+                 << "Artista: " << musica[i].artista << "\n"
+                 << "Duração: " << musica[i].duracao << "\n"
+                 << "Ano: " << musica[i].ano << "\n"
+                 << "Views: " << musica[i].views << "\n"
+                 << "Media de views por ano: " << fixed << setprecision(4) << musica[i].media_views << "\n"
+                 << "Parte mais reproduzida: \n   ";
+                 imprime_formatado(musica[i].descricao);
+                 cout << endl << "--------------------------------------------------\n";
+        }
+    }
+
+    if(!achou)
+        cout << "Nenhuma música encontrada desse artista.\n";
+}
+
+void BuscaPorParte(Musica *musica, int capacidade){
+    cin.ignore();
+    string trecho;
+    Enunciados(203);
+    getline(cin, trecho);
+    trecho = minusculo(trecho);
+
+    bool achou = false;
+    cout << "--------------------------------------------------\n";
+
+    for(int i = 0; i < capacidade; i++){
+        string parte = minusculo(musica[i].descricao);
+
+        if(achar_posicao(parte, trecho)){
+            achou = true;
+            cout << "Nome: " << musica[i].nome << "\n"
+                 << "Artista: " << musica[i].artista << "\n"
+                 << "Duração: " << musica[i].duracao << "\n"
+                 << "Ano: " << musica[i].ano << "\n"
+                 << "Views: " << musica[i].views << "\n"
+                 << "Media de views por ano: " << fixed << setprecision(4) << musica[i].media_views << "\n"
+                 << "Parte mais reproduzida: \n   \"";
+                 imprime_formatado(musica[i].descricao);
+                 cout << endl << "--------------------------------------------------\n";
+        }
+    }
+
+    if(!achou)
+        cout << "Nenhuma música encontrada contém esse trecho.\n";
 }
 
 
@@ -169,10 +235,11 @@ int main(){
     bool loop = true;
     int opcao_menu_int = 0;
     int indice1 = 0, indice2 = 0;
-    int capacidade = 10;
-    Musica* musica = new Musica[10];
+    int capacidade = 40;
+    int numero_de_musicas;
+    Musica* musica = new Musica[40];
 
-    musica = Leitura_csv(musica, nome_arquivo, capacidade);
+    musica = Leitura_csv(musica, nome_arquivo, capacidade, numero_de_musicas);
 
     while (opcao_menu_int != 5){
         
@@ -184,11 +251,14 @@ int main(){
             loop = true;
             while(loop){
                 Menu(10);
+                opcao_menu_int = 0;
                 cin >> opcao_menu_int;
 
                 switch (opcao_menu_int){
                 case 1:
-                    /* code */
+                    Exibe_banco_de_dados(musica, numero_de_musicas);
+                    // Menu(11);
+                    /* Organiza o banco de dados na ordem solicitada */
                     loop = false;
                     break;
                 case 2:
@@ -212,23 +282,23 @@ int main(){
                     Mensagem_de_erro(101);
                     break;
                 }
-                cout << opcao_menu_int << endl;
             }
             break;
         case 2:
-            while(opcao_menu_int != 1 or opcao_menu_int != 2 or opcao_menu_int != 3){
+			opcao_menu_int = 0;
+            while(opcao_menu_int != 1 and opcao_menu_int != 2 and opcao_menu_int != 3){
                 Menu(20);
                 cin >> opcao_menu_int;
 
                 switch (opcao_menu_int){
                 case 1:
-                    /* code */
+                    BuscaPorNome(musica, capacidade);
                     break;
                 case 2:
-                    /* code */
+                    BuscaPorArtista(musica, capacidade);
                     break;
                 case 3:
-                    /* code */
+                    BuscaPorParte(musica, capacidade);
                     break;
 
                 default:
@@ -246,6 +316,10 @@ int main(){
             break;
         case 5:
             /* Mensagem de saída */
+            break;
+        case 10122005:
+            cout << "Dados gerais do banco de dados:" << endl;
+            cout << "Tamanho do banco de dados: " << "\033[31m" << capacidade << "\033[0m\n" << endl;
             break;
 
         default:
