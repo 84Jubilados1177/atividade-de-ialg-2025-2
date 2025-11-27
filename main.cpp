@@ -2,6 +2,7 @@
 #include <iomanip>
 #include <string>
 #include <fstream>
+#include <limits>
 #include "textos.hpp"
 using namespace std;
 
@@ -118,7 +119,8 @@ void Exibe_banco_de_dados(Musica* &musica, int posicao_inicial, int posicao_fina
                  << "Media de views por ano: " << fixed << setprecision(4) << musica[i].media_views << "\n"
                  << "Parte mais reproduzida: \n   ";
                  imprime_formatado(musica[i].descricao);
-                 cout << endl << "--------------------------------------------------\n";
+                 cout << endl;
+                 Linha();
     }
 }
 
@@ -143,7 +145,7 @@ void BuscaPorNome(Musica *musica, int capacidade){
     trecho = minusculo(trecho);
 
     bool achou = false;
-    cout << "--------------------------------------------------\n";
+    Linha();
 
     for(int i = 0; i < capacidade; i++){
         string nome = minusculo(musica[i].nome);
@@ -158,7 +160,8 @@ void BuscaPorNome(Musica *musica, int capacidade){
                  << "Media de views por ano: " << fixed << setprecision(4) << musica[i].media_views << "\n"
                  << "Parte mais reproduzida: \n   ";
                  imprime_formatado(musica[i].descricao);
-                 cout << endl << "--------------------------------------------------\n";
+                 cout << endl;
+                 Linha();
         }
     }
 
@@ -174,7 +177,7 @@ void BuscaPorArtista(Musica *musica, int capacidade){
     trecho = minusculo(trecho);
 
     bool achou = false;
-    cout << "--------------------------------------------------\n";
+    Linha();
 
     for(int i = 0; i < capacidade; i++){
         string artista = minusculo(musica[i].artista);
@@ -189,7 +192,8 @@ void BuscaPorArtista(Musica *musica, int capacidade){
                  << "Media de views por ano: " << fixed << setprecision(4) << musica[i].media_views << "\n"
                  << "Parte mais reproduzida: \n   ";
                  imprime_formatado(musica[i].descricao);
-                 cout << endl << "--------------------------------------------------\n";
+                 cout << endl;
+                 Linha();
         }
     }
 
@@ -205,7 +209,7 @@ void BuscaPorParte(Musica *musica, int capacidade){
     trecho = minusculo(trecho);
 
     bool achou = false;
-    cout << "--------------------------------------------------\n";
+    Linha();
 
     for(int i = 0; i < capacidade; i++){
         string parte = minusculo(musica[i].descricao);
@@ -220,7 +224,8 @@ void BuscaPorParte(Musica *musica, int capacidade){
                  << "Media de views por ano: " << fixed << setprecision(4) << musica[i].media_views << "\n"
                  << "Parte mais reproduzida: \n   \"";
                  imprime_formatado(musica[i].descricao);
-                 cout << endl << "--------------------------------------------------\n";
+                 cout << endl;
+                 Linha();
         }
     }
 
@@ -284,6 +289,20 @@ void Ordem_media_visualizacoes (Musica* &musicas, int tamanho){
 
 }
 
+void Salvar(Musica* musicas, int tamanho, string nome_arquivo){
+    ofstream salvamento(nome_arquivo);
+    for(int i = 0; i < tamanho; i++){
+        salvamento << fixed << setprecision(4);
+        salvamento << "\"" << musicas[i].nome << "\",";
+        salvamento << "\"" << musicas[i].artista << "\",";
+        salvamento << "\"" << musicas[i].duracao << "\",";
+        salvamento << musicas[i].ano << ",";
+        salvamento << musicas[i].views << ",";
+        salvamento << musicas[i].media_views << ",";
+        salvamento << "\"" << musicas[i].descricao << "\"\n";
+    }
+}
+
 
 int main(){
     string nome_arquivo = "banco_de_dados.csv";
@@ -298,124 +317,145 @@ int main(){
     musica = Leitura_csv(musica, nome_arquivo, capacidade, numero_de_musicas);
 
     system("clear");
-    while (opcao_menu_int != 5){
+    while (opcao_menu_int != 7){
         Menu(0);
-        cin >> opcao_menu_int;
+        while (!(cin >> opcao_menu_int)) {
+            Mensagem_de_erro(0);
+            cin.clear(); 
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            Menu(0);
+        }
 
         switch (opcao_menu_int){
-        case 1: // Exibição da playlist
-            loop = true;
-            while(loop){
-                Menu(10);
+            case 1: // Exibição da playlist
+                system("clear");
+                loop = true;
+                while(loop){
+                    Menu(10);
+                    opcao_menu_int = 0;
+                    cin >> opcao_menu_int;
+
+                    switch (opcao_menu_int){
+                    case 1:
+                        system("clear");
+                        Exibe_banco_de_dados(musica, 1, numero_de_musicas);
+                        loop = false;
+                        break;
+                    case 2:
+                        indice1 = 0;
+                        indice2 = 0;
+                        system("clear");
+                        while(indice1 > numero_de_musicas or indice1 < 1){
+                            Enunciados(101, numero_de_musicas);
+                            cin >> indice1;
+
+                            if(indice1 > numero_de_musicas or indice1 < 1)
+                                Mensagem_de_erro(201);
+                        }
+                        while(indice2 > numero_de_musicas or indice2 < 1){
+                            Enunciados(102, numero_de_musicas);
+                            cin >> indice2;
+
+                            if(indice2 > numero_de_musicas or indice2 < 1)
+                                Mensagem_de_erro(201);
+                        }
+                        Linha();
+                        Ordena_os_indices(indice1, indice2);
+                        Exibe_banco_de_dados(musica, indice1, indice2);
+
+                        loop = false;
+                        break;
+                    case 3:
+                        loop = false;
+                        break;
+                    default:
+                        Mensagem_de_erro(101);
+                        break;
+                    }
+                }
+                break;
+            case 2:
+                system("clear");
                 opcao_menu_int = 0;
-                cin >> opcao_menu_int;
+                while(opcao_menu_int != 1 and opcao_menu_int != 2 and opcao_menu_int != 3 and opcao_menu_int != 4){
+                    Menu(20);
+                    cin >> opcao_menu_int;
 
-                switch (opcao_menu_int){
-                case 1:
-                    Exibe_banco_de_dados(musica, 1, numero_de_musicas);
-                    loop = false;
-                    break;
-                case 2:
-                    while(indice1 > numero_de_musicas or indice1 < 1){
-                        Enunciados(101, numero_de_musicas);
-                        cin >> indice1;
+                    switch (opcao_menu_int){
+                    case 1:
+                        system("clear");
+                        BuscaPorNome(musica, capacidade);
+                        break;
+                    case 2:
+                        system("clear");
+                        BuscaPorArtista(musica, capacidade);
+                        break;
+                    case 3:
+                        system("clear");
+                        BuscaPorParte(musica, capacidade);
+                        break;
+                    case 4:
+                        // Sai do codigo
+                        break;
 
-                        if(indice1 > numero_de_musicas or indice1 < 1)
-                            Mensagem_de_erro(201);
+                    default:
+                        Mensagem_de_erro(101);
+                        break;
                     }
-                    while(indice2 > numero_de_musicas or indice2 < 1){
-                        Enunciados(102, numero_de_musicas);
-                        cin >> indice2;
+                }
+                /* code */ 
+                break;
+            case 3:
+                system("clear");
+                Menu(11);
+                opcao_menu_int = 0;
+                while(opcao_menu_int != 1 and opcao_menu_int != 2 and opcao_menu_int != 3 and opcao_menu_int != 4){
+                    cin >> opcao_menu_int;
 
-                        if(indice2 > numero_de_musicas or indice2 < 1)
-                            Mensagem_de_erro(201);
+                    switch (opcao_menu_int){
+                    case 1: // (1) Ordem alfabética [pelo nome]
+                        Ordem_alfabetica_nome(musica, numero_de_musicas);
+                        Enunciados(300);
+                        break;
+                    case 2: // (2) Número total de visualizações
+                        Ordem_visualizacoes(musica, numero_de_musicas);
+                        Enunciados(300);
+                        break;
+                    case 3: // (3) Média de vizualizações por ano"
+                        Ordem_media_visualizacoes(musica, numero_de_musicas);
+                        Enunciados(300);
+                        break;
+                    case 4:
+                        break;
+                    default:
+                        Mensagem_de_erro(101);
+                        break;
                     }
-
-                    Ordena_os_indices(indice1, indice2);
-                    Exibe_banco_de_dados(musica, indice1, indice2);
-
-                    loop = false;
-                    break;
-                case 3:
-                    loop = false;
-                    break;
-                default:
-                    Mensagem_de_erro(101);
-                    break;
                 }
+                break;
+            case 4:
+                /* code */
+                break;
+            case 5:
+                /* code */
+                break;
+            case 6:
+                system("clear");
+                Salvar(musica, numero_de_musicas, nome_arquivo);
+                Enunciados(600);
+                break;
+            case 7:
+                Saindo();
+                break;
+            case 10122005:
+                cout << "Dados gerais do banco de dados:" << endl;
+                cout << "Tamanho do banco de dados: " << "\033[31m" << capacidade << "\033[0m\n" << endl;
+                break;
+
+            default:
+                Mensagem_de_erro(100);
+                break;
             }
-            break;
-        case 2:
-			opcao_menu_int = 0;
-            while(opcao_menu_int != 1 and opcao_menu_int != 2 and opcao_menu_int != 3){
-                Menu(20);
-                cin >> opcao_menu_int;
-
-                switch (opcao_menu_int){
-                case 1:
-                    BuscaPorNome(musica, capacidade);
-                    break;
-                case 2:
-                    BuscaPorArtista(musica, capacidade);
-                    break;
-                case 3:
-                    BuscaPorParte(musica, capacidade);
-                    break;
-
-                default:
-                    Mensagem_de_erro(101);
-                    break;
-                }
-            }
-            /* code */ 
-            break;
-        case 3:
-            Menu(11);
-            opcao_menu_int = 0;
-            while(opcao_menu_int != 1 and opcao_menu_int != 2 and opcao_menu_int != 3 and opcao_menu_int != 4){
-                cin >> opcao_menu_int;
-
-                switch (opcao_menu_int){
-                case 1: // (1) Ordem alfabética [pelo nome]
-                    Ordem_alfabetica_nome(musica, numero_de_musicas);
-                    Enunciados(300);
-                    break;
-                case 2: // (2) Número total de visualizações
-                    Ordem_visualizacoes(musica, numero_de_musicas);
-                    Enunciados(300);
-                    break;
-                case 3: // (3) Média de vizualizações por ano"
-                    Ordem_media_visualizacoes(musica, numero_de_musicas);
-                    Enunciados(300);
-                    break;
-                case 4:
-                    break;
-                default:
-                    Mensagem_de_erro(101);
-                    break;
-                }
-            }
-            break;
-        case 4:
-            /* code */
-            break;
-        case 5:
-            /* code */
-            break;
-        case 6:
-            /* code */
-            break;
-        case 7:
-            Saindo();
-            break;
-        case 10122005:
-            cout << "Dados gerais do banco de dados:" << endl;
-            cout << "Tamanho do banco de dados: " << "\033[31m" << capacidade << "\033[0m\n" << endl;
-            break;
-
-        default:
-            break;
-        }
     }
     
 
