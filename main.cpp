@@ -108,8 +108,8 @@ void imprime_formatado(const string &texto) {
     }
 }
 
-void Exibe_banco_de_dados(Musica* &musica, int num_musicas){
-    for(int i = 0; i < num_musicas; i++){
+void Exibe_banco_de_dados(Musica* &musica, int posicao_inicial, int posicao_final){
+    for(int i = posicao_inicial-1; i < posicao_final; i++){
         cout << "Nome: " << musica[i].nome << "\n"
                  << "Artista: " << musica[i].artista << "\n"
                  << "Duração: " << musica[i].duracao << "\n"
@@ -228,6 +228,62 @@ void BuscaPorParte(Musica *musica, int capacidade){
         cout << "Nenhuma música encontrada contém esse trecho.\n";
 }
 
+void Ordena_os_indices(int &indice1, int &indice2){
+    int auxiliar;
+    if(indice1 > indice2){
+        auxiliar = indice2;
+        indice2 = indice1;
+        indice1 = auxiliar;
+    }
+}
+
+void Ordem_alfabetica_nome (Musica* &musicas, int tamanho){
+    Musica auxiliar;
+    int j;
+
+    for(int i = 1; i < tamanho; i++){
+        auxiliar = musicas[i];
+        j = i - 1;
+        while((j >= 0) and (minusculo(musicas[j].nome) > minusculo(auxiliar.nome))){
+            musicas[j+1] = musicas[j];
+            j--;
+        }
+        musicas[j+1] = auxiliar;
+    }
+
+}
+
+void Ordem_visualizacoes (Musica* &musicas, int tamanho){
+    Musica auxiliar;
+    int j;
+
+    for(int i = 1; i < tamanho; i++){
+        auxiliar = musicas[i];
+        j = i - 1;
+        while((j >= 0) and (musicas[j].views < auxiliar.views)){
+            musicas[j+1] = musicas[j];
+            j--;
+        }
+        musicas[j+1] = auxiliar;
+    }
+
+}
+void Ordem_media_visualizacoes (Musica* &musicas, int tamanho){
+    Musica auxiliar;
+    int j;
+
+    for(int i = 1; i < tamanho; i++){
+        auxiliar = musicas[i];
+        j = i - 1;
+        while((j >= 0) and (musicas[j].media_views < auxiliar.media_views)){
+            musicas[j+1] = musicas[j];
+            j--;
+        }
+        musicas[j+1] = auxiliar;
+    }
+
+}
+
 
 int main(){
     string nome_arquivo = "banco_de_dados.csv";
@@ -241,8 +297,8 @@ int main(){
 
     musica = Leitura_csv(musica, nome_arquivo, capacidade, numero_de_musicas);
 
+    system("clear");
     while (opcao_menu_int != 5){
-        
         Menu(0);
         cin >> opcao_menu_int;
 
@@ -256,26 +312,31 @@ int main(){
 
                 switch (opcao_menu_int){
                 case 1:
-                    Exibe_banco_de_dados(musica, numero_de_musicas);
-                    // Menu(11);
-                    /* Organiza o banco de dados na ordem solicitada */
+                    Exibe_banco_de_dados(musica, 1, numero_de_musicas);
                     loop = false;
                     break;
                 case 2:
-                    while(indice1 > capacidade or indice1 < 1){
-                        Enunciados(101, capacidade);
+                    while(indice1 > numero_de_musicas or indice1 < 1){
+                        Enunciados(101, numero_de_musicas);
                         cin >> indice1;
 
-                        if(indice1 > capacidade or indice1 < 1)
+                        if(indice1 > numero_de_musicas or indice1 < 1)
                             Mensagem_de_erro(201);
                     }
-                    while(indice2 > capacidade or indice2 < 1){
-                        Enunciados(102, capacidade);
+                    while(indice2 > numero_de_musicas or indice2 < 1){
+                        Enunciados(102, numero_de_musicas);
                         cin >> indice2;
 
-                        if(indice2 > capacidade or indice2 < 1)
+                        if(indice2 > numero_de_musicas or indice2 < 1)
                             Mensagem_de_erro(201);
                     }
+
+                    Ordena_os_indices(indice1, indice2);
+                    Exibe_banco_de_dados(musica, indice1, indice2);
+
+                    loop = false;
+                    break;
+                case 3:
                     loop = false;
                     break;
                 default:
@@ -309,13 +370,43 @@ int main(){
             /* code */ 
             break;
         case 3:
-            /* code */
+            Menu(11);
+            opcao_menu_int = 0;
+            while(opcao_menu_int != 1 and opcao_menu_int != 2 and opcao_menu_int != 3 and opcao_menu_int != 4){
+                cin >> opcao_menu_int;
+
+                switch (opcao_menu_int){
+                case 1: // (1) Ordem alfabética [pelo nome]
+                    Ordem_alfabetica_nome(musica, numero_de_musicas);
+                    Enunciados(300);
+                    break;
+                case 2: // (2) Número total de visualizações
+                    Ordem_visualizacoes(musica, numero_de_musicas);
+                    Enunciados(300);
+                    break;
+                case 3: // (3) Média de vizualizações por ano"
+                    Ordem_media_visualizacoes(musica, numero_de_musicas);
+                    Enunciados(300);
+                    break;
+                case 4:
+                    break;
+                default:
+                    Mensagem_de_erro(101);
+                    break;
+                }
+            }
             break;
         case 4:
             /* code */
             break;
         case 5:
-            /* Mensagem de saída */
+            /* code */
+            break;
+        case 6:
+            /* code */
+            break;
+        case 7:
+            Saindo();
             break;
         case 10122005:
             cout << "Dados gerais do banco de dados:" << endl;

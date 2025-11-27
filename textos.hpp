@@ -3,6 +3,10 @@
 #include <iostream>
 using namespace std;
 
+void Linha(){
+    cout << "--------------------------------------------------" << endl;
+}
+
 void Menu(int numero){
 
     switch (numero){
@@ -10,32 +14,35 @@ void Menu(int numero){
         cout << "---------------------- MENU ----------------------" << endl;
         cout << "(1) Exibir músicas" << endl;
         cout << "(2) Buscar na playlist" << endl;
-        cout << "(3) Adicionar nova música à playlist" << endl;
-        cout << "(4) Remover música da playlist" << endl;
-        cout << "(5) Sair da aplicação" << endl;
-        cout << "--------------------------------------------------" << endl;
+        cout << "(3) Ordenar playlist" << endl;
+        cout << "(4) Adicionar nova música à playlist" << endl;
+        cout << "(5) Remover música da playlist" << endl;
+        cout << "(6) Salvar playlist" << endl;
+        cout << "(7) Sair da aplicação" << endl;
+        Linha();
         break;
     case 10:
-        cout << "--------------------------------------------------" << endl;
+        Linha();
         cout << "(1) Exibir playlist completa" << endl;
         cout << "(2) Exibir parte da playlist" << endl;
-        cout << "--------------------------------------------------" << endl;
+        cout << "(3) Cancelar" << endl;
+        Linha();
         break;
     case 11:
-        cout << "--------------------------------------------------" << endl;
+        Linha();
         cout << "Como deseja ordenar as músicas para exibição?" << endl;
         cout << "(1) Ordem alfabética [pelo nome]" << endl;
         cout << "(2) Número total de visualizações" << endl;
         cout << "(3) Média de vizualizações por ano" << endl;
         cout << "(4) Cancelar" << endl;
-        cout << "--------------------------------------------------" << endl;
+        Linha();
         break;
     case 20:
-        cout << "--------------------------------------------------" << endl;
+        Linha();
         cout << "(1) Buscar pelo nome da música" << endl;
         cout << "(2) Buscar músicas pelo nome do artista" << endl;
         cout << "(3) Buscar pela letra da parte mais repetida" << endl;
-        cout << "--------------------------------------------------" << endl;
+        Linha();
         break;
     case 30:
         /* code */
@@ -57,26 +64,34 @@ void Enunciados(int numero, int auxiliar1 = 0, int auxiliar2 = 0){
     switch (numero)
     {
     case 101:
-        cout << "--------------------------------------------------" << endl;
+        Linha();
         cout << "Digite um índice entre 1 e " << auxiliar1 << ": ";
         break;
     case 102:
-        cout << "--------------------------------------------------" << endl;
+        Linha();
         cout << "Digite outro índice entre 1 e " << auxiliar1 << ": ";
+        Linha();
         break;
     case 201:
-        cout << "--------------------------------------------------" << endl;
+        Linha();
         cout << "Insira o nome ou um trecho do nome da música: ";
         break;
     case 202:
-        cout << "--------------------------------------------------" << endl;
+        Linha();
         cout << "Insira o nome do artista: ";
         break;
     case 203:
-        cout << "--------------------------------------------------" << endl;
+        Linha();
         cout << "Insira o trecho da música: ";
         break;
+    case 300:
+        Linha();
+        cout << "Playlist ordenada!" << endl;
+        break;
     case 111:
+        /* code  */
+        break;
+    case 112:
         /* code  */
         break;
     
@@ -88,20 +103,25 @@ void Enunciados(int numero, int auxiliar1 = 0, int auxiliar2 = 0){
 void Mensagem_de_erro(int erro){
     switch (erro){
     case 101:
-        cout << "--------------------------------------------------" << endl;
+        Linha();
         cout << "Essa opção é inválida, digite uma opção dentre as \nopções listadas." << endl;
         break;
     
     case 201:
-        cout << "--------------------------------------------------" << endl;
+        Linha();
         cout << "Índice inválido, por favor insira um índice entre\nos limites solicitados." << endl;
         break;
     
     default:
-        cout << "--------------------------------------------------" << endl;
+        Linha();
         cout << "ERRO INVÁLIDO" << endl;
         break;
     }
+}
+void Saindo(){
+    Linha();
+    cout << "Saindo . . ." << endl;
+    Linha();
 }
 
 #endif
