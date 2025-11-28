@@ -36,16 +36,6 @@ void Menu(int numero){
         Linha();
         cout  << " " << COR_USUARIO;
         break;
-    case 11:
-        Linha();
-        cout << "Como deseja ordenar as músicas para exibição?" << endl;
-        cout << COR_OPCOES << "(1)" << RESET << " Ordem alfabética [pelo nome]" << endl;
-        cout << COR_OPCOES << "(2)" << RESET << " Número total de visualizações" << endl;
-        cout << COR_OPCOES << "(3)" << RESET << " Média de vizualizações por ano" << endl;
-        cout << COR_CANCELAR << "(4)" << RESET << " Cancelar" << endl;
-        Linha();
-        cout  << " " << COR_USUARIO;
-        break;
     case 20:
         Linha();
         cout << COR_OPCOES << "(1)" << RESET << " Buscar pelo nome da música" << endl;
@@ -56,10 +46,19 @@ void Menu(int numero){
         cout  << " " << COR_USUARIO;
         break;
     case 30:
-        /* code */
-        break;
-    
+        Linha();
+        cout << "Como deseja ordenar as músicas para exibição?" << endl;
+        cout << COR_OPCOES << "(1)" << RESET << " Ordem alfabética [pelo nome]" << endl;
+        cout << COR_OPCOES << "(2)" << RESET << " Número total de visualizações" << endl;
+        cout << COR_OPCOES << "(3)" << RESET << " Média de vizualizações por ano" << endl;
+        cout << COR_CANCELAR << "(4)" << RESET << " Cancelar" << endl;
+        Linha();
+        cout  << " " << COR_USUARIO;
+        break;    
     default:
+        Linha();
+        cout << "ERRO INVÁLIDO" << endl;
+        break;
         break;
     }
 
@@ -112,6 +111,8 @@ void Enunciados(int numero, int auxiliar1 = 0, int auxiliar2 = 0){
         break;
     
     default:
+        Linha();
+        cout << "ERRO INVÁLIDO" << endl;
         break;
     }
 }
