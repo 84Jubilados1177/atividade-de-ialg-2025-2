@@ -18,7 +18,7 @@ void Menu(int numero){
     switch (numero){
     case 0:
         cout << "---------------------- MENU ----------------------" << endl;
-        cout << COR_OPCOES << "(1)" << RESET << " Exibir músicas" << endl;
+        cout << COR_OPCOES << "(1)" << RESET << " Exibir playlist" << endl;
         cout << COR_OPCOES << "(2)" << RESET << " Buscar na playlist" << endl;
         cout << COR_OPCOES << "(3)" << RESET << " Ordenar playlist" << endl;
         cout << COR_OPCOES << "(4)" << RESET << " Adicionar nova música à playlist" << endl;
