@@ -175,8 +175,9 @@ int main(){
             case 4:
                 /* code */
                 break;
+            // Remover da playlist
             case 5:
-                /* code */
+                Apaga_musica(musica, capacidade, numero_de_musicas, nome_arquivo);
                 break;
             // Salvar
             case 6:

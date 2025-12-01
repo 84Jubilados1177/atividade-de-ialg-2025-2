@@ -1,10 +1,13 @@
 #ifndef TEXTOS_HPP
 #define TEXTOS_HPP
 #include <iostream>
+#include <chrono>
+#include <thread>
 #define COR_CANCELAR    "\033[1m\033[31m"
 #define COR_OPCOES      "\033[1m\033[96m"
 #define RESET           "\033[0m"
 #define COR_USUARIO     "\033[1m\033[153;153;153m"
+#define NEGRITO     "\033[1m"
 using namespace std;
 
 void Linha(){
@@ -12,7 +15,57 @@ void Linha(){
     cout << "--------------------------------------------------" << endl;
 }
 
-void Menu(int numero){
+void Imprime_formatado(const string &texto, int lim = 47, int spaces = 3) {
+    cout << RESET;
+    const int LIMITE = lim;
+    bool controle = true;
+    int pos = 0;
+
+    while (pos < texto.size() and controle) {
+        int fim = pos + LIMITE;
+
+        if (fim >= texto.size() and controle) {
+            cout << texto.substr(pos) << "\n";
+            for(int i = 0; i < spaces; i++)
+                cout << " ";
+            controle = false;
+        }
+
+        if (texto[fim] == ' ' and controle) {
+            cout << texto.substr(pos, LIMITE) << "\n";
+            for(int i = 0; i < spaces; i++)
+                cout << " ";
+            pos += LIMITE + 1;
+        }
+        else if (controle){
+            int quebra = fim;
+            while (quebra > pos && texto[quebra] != ' ')
+                quebra--;
+
+            if (quebra == pos)
+                quebra = fim;
+
+            cout << texto.substr(pos, quebra - pos) << "\n";
+            for(int i = 0; i < spaces; i++)
+                cout << " ";
+
+            pos = quebra;
+            while (pos < texto.size() && texto[pos] == ' ')
+                pos++;
+        }
+    }
+}
+
+void Digita_lento(const string& texto, float milissegundos_por_letra) {
+    int tempo = milissegundos_por_letra*1000;
+    for (char c : texto) {
+        cout << c;
+        cout.flush(); 
+        this_thread::sleep_for(chrono::milliseconds(tempo));
+    }
+}
+
+void Menu(int numero, string musica = ""){
     cout << RESET;
 
     switch (numero){
@@ -54,6 +107,14 @@ void Menu(int numero){
         cout << COR_CANCELAR << "(4)" << RESET << " Cancelar" << endl;
         Linha();
         cout  << " " << COR_USUARIO;
+        break; 
+    case 50:
+        Linha();
+        Imprime_formatado("Você tem certeza de que deseja apagar a música " + musica + "?", 50, 0);
+        cout << endl << COR_OPCOES << "(1)" << RESET << " Sim" << endl;
+        cout << COR_CANCELAR << "(2)" << RESET << " Cancelar" << endl;
+        Linha();
+        cout  << " " << COR_USUARIO;
         break;    
     default:
         Linha();
@@ -61,12 +122,6 @@ void Menu(int numero){
         break;
         break;
     }
-
-    /*
-    --------------------------------------------------
-    X - Salvar alterações
-    --------------------------------------------------
-    */
 }
 
 
@@ -76,26 +131,27 @@ void Enunciados(int numero, int auxiliar1 = 0, int auxiliar2 = 0){
     {
     case 101:
         Linha();
-        cout << "Digite um índice entre 1 e " << auxiliar1 << ": ";
+        cout << "Digite um índice entre 1 e " << auxiliar1 << ": \n";
         cout  << COR_USUARIO;
         break;
     case 102:
         Linha();
-        cout << "Digite outro índice entre 1 e " << auxiliar1 << ": ";
+        cout << "Digite outro índice entre 1 e " << auxiliar1 << ": \n";
         cout  << COR_USUARIO;
         break;
     case 201:
         Linha();
-        cout << "Insira o nome ou um trecho do nome da música: ";
+        cout << "Insira o nome ou um trecho do nome da música: \n";
+        cout  << COR_USUARIO;
         break;
     case 202:
         Linha();
-        cout << "Insira o nome do artista: ";
+        cout << "Insira o nome do artista: \n";
         cout  << COR_USUARIO;
         break;
     case 203:
         Linha();
-        cout << "Insira o trecho da música: ";
+        cout << "Insira o trecho da música: \n";
         cout  << COR_USUARIO;
         break;
     case 300:
@@ -138,7 +194,14 @@ void Mensagem_de_erro(int erro){
         Linha();
         cout << "Índice inválido, por favor insira um índice entre\nos limites solicitados." << endl;
         break;
-    
+
+    case 501:
+        cout << "Essa música não existe no banco de dados." << endl;
+        break;
+    case 502:
+        Linha();
+        cout << "Esse artista não existe no banco de dados." << endl;
+        break;
     default:
         Linha();
         cout << "ERRO INVÁLIDO" << endl;
@@ -148,7 +211,11 @@ void Mensagem_de_erro(int erro){
 void Saindo(){
     cout << RESET;
     Linha();
-    cout << "Saindo . . ." << endl;
+    Digita_lento("Saindo", 0.1);
+    for(int i = 0; i < 3; i++)
+        Digita_lento(" .", 0.5);
+
+    cout << endl;
     Linha();
 }
 

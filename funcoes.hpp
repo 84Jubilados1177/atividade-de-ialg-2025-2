@@ -114,41 +114,8 @@ Musica* Leitura_csv(Musica *musica, string nome_arquivo, int &capacidade, int &n
     return musica;
 }
 
-void Imprime_formatado(const string &texto) {
-    const int LIMITE = 47;
-    bool controle = true;
-    int pos = 0;
-
-    while (pos < texto.size() and controle) {
-        int fim = pos + LIMITE;
-
-        if (fim >= texto.size() and controle) {
-            cout << texto.substr(pos) << "\n   ";
-            controle = false;
-        }
-
-        if (texto[fim] == ' ' and controle) {
-            cout << texto.substr(pos, LIMITE) << "\n   ";
-            pos += LIMITE + 1;
-        }
-        else if (controle){
-            int quebra = fim;
-            while (quebra > pos && texto[quebra] != ' ')
-                quebra--;
-
-            if (quebra == pos)
-                quebra = fim;
-
-            cout << texto.substr(pos, quebra - pos) << "\n   ";
-
-            pos = quebra;
-            while (pos < texto.size() && texto[pos] == ' ')
-                pos++;
-        }
-    }
-}
-
 void Exibe_banco_de_dados(Musica* &musica, int posicao_inicial, int posicao_final){
+    cout << RESET;
     for(int i = posicao_inicial-1; i < posicao_final; i++){
         cout << "Nome: " << musica[i].nome << "\n"
                  << "Artista: " << musica[i].artista << "\n"
@@ -340,6 +307,95 @@ void Salvar(Musica* musicas, int tamanho, string nome_arquivo){
         salvamento << musicas[i].media_views << ",";
         salvamento << "\"" << musicas[i].descricao << "\"\n";
     }
+}
+
+int Valida_artista(Musica *musica, int capacidade){
+    cin.ignore(); 
+    int i = 0, posicao = -1;
+    string nomeA, nomeM, nome;
+    string artista; 
+    Enunciados(202);
+    getline(cin, nomeA);
+    nomeA = Minusculo(Retira_acentos(nomeA));
+
+    bool achou = false;
+
+    while(i < capacidade and !achou){
+        artista = Minusculo(Retira_acentos(musica[i].artista));
+        if(Achar_posicao(artista, nomeA)){
+            achou = true;
+            Enunciados(201);
+            getline(cin, nomeM);
+            nomeM = Minusculo(Retira_acentos(nomeM));
+
+            bool achouM = false;
+            Linha();
+            int j = 0;
+
+            while(j < capacidade and !achouM){
+                nome = Minusculo(Retira_acentos(musica[j].nome));
+
+                if(Achar_posicao(nome, nomeM)){
+                    achouM = true;
+                    posicao = j;
+                    cout << NEGRITO << "  Musica a ser deletada: " << RESET << endl << endl;
+                    cout << "  Artista: " << musica[i].artista << endl
+                            << "  Música: " << musica[j].nome << endl;
+                            Linha();
+                }
+            j++;
+            }
+            if(!achouM){
+                Mensagem_de_erro(501);
+            }
+        }
+        i++;
+    }
+
+    if(!achou){
+        Mensagem_de_erro(502);
+    }
+
+    return posicao;
+}
+
+void Apaga_musica(Musica* &musicas, int capacidade, int &tamanho, string nome_arquivo){
+    int opcao = 0, posicao = -1, j = 0;
+    Musica* nova_playlist = new Musica[capacidade];
+       
+    posicao = Valida_artista(musicas, tamanho);
+
+    while((opcao < 1 or opcao > 2) and !(posicao < 0)){
+
+        Menu(50, musicas[posicao].nome);
+
+        while (!(cin >> opcao)) {
+            Mensagem_de_erro(0);
+            cin.clear(); 
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            Menu(50);
+        }
+        switch (opcao){
+        case 1:
+            for(int i = 0; i < tamanho; i++){
+                if(posicao != i){
+                    nova_playlist[j] = musicas[i];
+                    j++;
+                }
+            }
+
+                delete[] musicas;
+                musicas = nova_playlist;
+                tamanho--;
+            break;
+        case 2:
+            /* Cancela ação */
+            break;
+        default:
+            break;
+        }
+    }
+
 }
 
 #endif
