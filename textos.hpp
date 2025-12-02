@@ -100,7 +100,7 @@ void Menu(int numero, string musica = ""){
         break;
     case 30:
         Linha();
-        cout << "Como deseja ordenar as músicas para exibição?" << endl;
+        cout << "Como deseja ordenar as músicas?" << endl;
         cout << COR_OPCOES << "(1)" << RESET << " Ordem alfabética [pelo nome]" << endl;
         cout << COR_OPCOES << "(2)" << RESET << " Número total de visualizações" << endl;
         cout << COR_OPCOES << "(3)" << RESET << " Média de vizualizações por ano" << endl;
@@ -174,12 +174,13 @@ void Enunciados(int numero, int auxiliar1 = 0, int auxiliar2 = 0){
 }
 
 void Mensagem_de_erro(int erro){
+    system("clear");
     cout << RESET;
     switch (erro){
     
     case 0:
         Linha();
-        cout << "Entrada inválida. Por favor, insira um NUMERO \ndentre as opções.\n";
+        cout << "Entrada inválida. Por favor, insira um NUMERO \nINTEIRO dentre as opções.\n";
         break;
     case 100:
         Linha();

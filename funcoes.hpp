@@ -397,5 +397,95 @@ void Apaga_musica(Musica* &musicas, int capacidade, int &tamanho, string nome_ar
     }
 
 }
+void limpaBuffer() {
+    cin.clear();
+    cin.ignore(1000, '\n');
+}
+
+void Adicionar_nova_musica (Musica* &musicas, int &capacidade, int &numero_de_musicas){
+	int i = numero_de_musicas;
+	bool voltar = true;
+	if (numero_de_musicas == capacidade){
+		Redimensionamento(musicas, capacidade);
+        capacidade +=5 ;
+	}
+	
+	while (voltar){
+		bool artista_igual = false;
+		bool nome_musica_igual = false;
+		cout << "Digite o nome da música: ";
+		cin.ignore();
+		getline(cin, musicas[i].nome);
+		for (int j = 0; j < numero_de_musicas; j++){
+			if (Minusculo(musicas[i].nome) == Minusculo(musicas[j].nome)){
+				nome_musica_igual = true;
+			}
+		}
+		cout << "Digite o nome do artista: ";
+		getline(cin, musicas[i].artista);
+		for (int j = 0; j < numero_de_musicas; j++){
+			if (Minusculo(musicas[i].artista) == Minusculo(musicas[j].artista)){
+				artista_igual = true;
+			}
+		}
+		if (artista_igual and nome_musica_igual){
+			cout << "Essa música já existe. Escolha outra!" << endl;
+		}
+		else{
+			voltar = false;
+		}
+	}
+	
+	bool ok = false;
+	cout << "Digite o ano em que a música foi lançada: ";
+	while (!ok) {
+		cin >> musicas[i].ano;
+		if (!cin.fail()) {
+			ok = true;
+		} else {
+			cout << "Valor inválido! Digite um ano inteiro: ";
+			limpaBuffer();
+		}
+	}
+	limpaBuffer();
+	
+	cout << "Digite a duração da música: ";
+	getline(cin, musicas[i].duracao);
+	
+	ok = false;
+	cout << "Digite o número de visualizações da música: ";
+	while (!ok) {
+		cin >> musicas[i].views;
+		if (!cin.fail()) {
+			ok = true;
+		} else {
+			cout << "Valor inválido! Digite um número inteiro: ";
+			limpaBuffer();
+		}
+	}
+	limpaBuffer();
+	
+	ok = false;
+	cout << "Digite a média de visualizações por ano da música: ";
+	while (!ok) {
+		cin >> musicas[i].media_views;
+		if (!cin.fail()) {
+			ok = true;
+		} else {
+			cout << "Valor inválido! Digite um numero inteiro ou quebrado: ";
+			limpaBuffer();
+		}
+	}
+	limpaBuffer();
+	cout << "Digite a parte que mais gosta da música (Separe os versos com \".\" ou \";\"): ";	
+	do{
+		getline(cin, musicas[i].descricao);
+		if (musicas[i].descricao.size() == 0)
+			cout << "A descrição não pode ser vazia! Digite pelo menos um espaço: ";
+		}while (musicas[i].descricao.size() == 0);
+	cout << endl << "Música adicionada!";
+		
+	numero_de_musicas++;
+}
 
 #endif

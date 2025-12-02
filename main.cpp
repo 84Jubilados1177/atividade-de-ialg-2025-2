@@ -8,9 +8,30 @@
 #include "funcoes.hpp"
 using namespace std;
 
+bool E_um_numero(char caractere){
+    if(caractere < '0' || caractere > '9')
+        return false;
+    
+    return true;
+}
+
+bool Valida_opcao(string str){
+    int  i = 0;
+    bool e_numero = true;
+    char c;
+    while(i < str.size()){
+        c = str[i];
+        if(!(E_um_numero(c)))
+            e_numero = false;
+        i++;
+    }
+    return e_numero;
+}
+
 int main(){
     string nome_arquivo = "banco_de_dados.csv";
-    char lixo;
+    string lixo;
+    string opcao_string;
     bool loop = true;
     int opcao_menu_int = 0;
     int indice1 = 0, indice2 = 0;
@@ -18,36 +39,40 @@ int main(){
     int numero_de_musicas;
     Musica* musica = new Musica[capacidade];
 
-
     musica = Leitura_csv(musica, nome_arquivo, capacidade, numero_de_musicas);
 
     system("clear");
     while (opcao_menu_int != 7){
         Menu(0);
         // Caso o usuário digite uma letra dá erro
-        while (!(cin >> opcao_menu_int)) {
+        getline(cin, opcao_string);
+        while (!(Valida_opcao(opcao_string))) {
             Mensagem_de_erro(0);
-            cin.clear(); 
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
             Menu(0);
+            getline(cin, opcao_string);
         }
+        opcao_menu_int = stoi(opcao_string);
 
         switch (opcao_menu_int){
             // Exibição da playlist
             case 1: 
                 system("clear");
+
                 loop = true;
                 while(loop){
                     Menu(10);
                     opcao_menu_int = 0;
 
                     // Caso o usuário digite uma letra dá erro
-                    while (!(cin >> opcao_menu_int)) {
+                    getline(cin, opcao_string);
+                    while (!(Valida_opcao(opcao_string))) {
                         Mensagem_de_erro(0);
-                        cin.clear(); 
-                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                        Menu(0);
+
+                        Menu(10);
+                        getline(cin, opcao_string);
                     }
+                    opcao_menu_int = stoi(opcao_string);
 
                     switch (opcao_menu_int){
                     // Exibir playlist completa
@@ -65,15 +90,32 @@ int main(){
 
                         // Confere se os índices são válidos
                         while(indice1 > numero_de_musicas or indice1 < 1){
+
                             Enunciados(101, numero_de_musicas);
-                            cin >> indice1;
+                            // Caso o usuário digite uma letra dá erro
+                            getline(cin, opcao_string);
+                            while (!(Valida_opcao(opcao_string))) {
+                                Mensagem_de_erro(0);
+
+                                Enunciados(101, numero_de_musicas);
+                                getline(cin, opcao_string);
+                            }
+                            indice1 = stoi(opcao_string);
 
                             if(indice1 > numero_de_musicas or indice1 < 1)
                                 Mensagem_de_erro(201);
                         }
                         while(indice2 > numero_de_musicas or indice2 < 1){
                             Enunciados(102, numero_de_musicas);
-                            cin >> indice2;
+                            // Caso o usuário digite uma letra dá erro
+                            getline(cin, opcao_string);
+                            while (!(Valida_opcao(opcao_string))) {
+                                Mensagem_de_erro(0);
+
+                                Enunciados(102, numero_de_musicas);
+                                getline(cin, opcao_string);
+                            }
+                            indice2 = stoi(opcao_string);
 
                             if(indice2 > numero_de_musicas or indice2 < 1)
                                 Mensagem_de_erro(201);
@@ -107,12 +149,14 @@ int main(){
                     Menu(20);
                     
                     // Caso o usuário digite uma letra dá erro
-                    while (!(cin >> opcao_menu_int)) {
+                    getline(cin, opcao_string);
+                    while (!(Valida_opcao(opcao_string))) {
                         Mensagem_de_erro(0);
-                        cin.clear(); 
-                        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                        Menu(0);
+
+                        Menu(20);
+                        getline(cin, opcao_string);
                     }
+                    opcao_menu_int = stoi(opcao_string);
 
                     switch (opcao_menu_int){
                     // Buscar pelo nome da música
@@ -132,7 +176,8 @@ int main(){
                         BuscaPorParte(musica, capacidade);
                         break;
                     case 4:
-                        // Volta para o menu principal (0) sem fazer nada
+                        // Volta para o menu principal (0) sem fazer nad
+                        system("clear");
                         break;
 
                     default:
@@ -142,13 +187,23 @@ int main(){
                     }
                 }
                 break;
+            // Ordenação
             case 3:
                 system("clear");
-                Menu(30);
-                opcao_menu_int = 0;
-                while(opcao_menu_int != 1 and opcao_menu_int != 2 and opcao_menu_int != 3 and opcao_menu_int != 4){
-                    cin >> opcao_menu_int;
+                opcao_menu_int = 0;                
 
+                while(opcao_menu_int != 1 and opcao_menu_int != 2 and opcao_menu_int != 3 and opcao_menu_int != 4){  
+                    Menu(30);    
+                    // Caso o usuário digite uma letra dá erro
+                    getline(cin, opcao_string);
+                    while (!(Valida_opcao(opcao_string))) {
+                        Mensagem_de_erro(0);
+
+                        Menu(30);
+                        getline(cin, opcao_string);
+                    }
+                    opcao_menu_int = stoi(opcao_string);
+                    
                     switch (opcao_menu_int){
                     case 1: // (1) Ordem alfabética [pelo nome]
                         Ordem_alfabetica_nome(musica, numero_de_musicas);
@@ -164,6 +219,7 @@ int main(){
                         break;
                     case 4:
                         // Volta para o menu principal (0) sem fazer nada
+                        system("clear");
                         break;
                     default:
                         // Caso o usuário digite um numero maior que 4 ou menor do que 1
@@ -172,8 +228,9 @@ int main(){
                     }
                 }
                 break;
+            //Adicionar música a playlist
             case 4:
-                /* code */
+                Adicionar_nova_musica(musica, capacidade, numero_de_musicas);
                 break;
             // Remover da playlist
             case 5:
