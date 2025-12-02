@@ -38,6 +38,12 @@ const map<string, string> MAPA_ACENTOS = {
     {"Ç", "C"}
 };
 
+void limpaBuffer() {
+    cin.clear();
+    cin.ignore(1000, '\n');
+}
+
+
 string Retira_acentos(const string& str) {
     string temp = str;
 
@@ -163,7 +169,6 @@ bool Achar_posicao(string texto, string trecho){
 }
 
 void BuscaPorNome(Musica *musica, int capacidade){
-    cin.ignore();
     string trecho;
     Enunciados(201);
     getline(cin, trecho);
@@ -195,7 +200,6 @@ void BuscaPorNome(Musica *musica, int capacidade){
 }
 
 void BuscaPorArtista(Musica *musica, int capacidade){
-    cin.ignore();
     string trecho;
     Enunciados(202);
     getline(cin, trecho);
@@ -227,7 +231,6 @@ void BuscaPorArtista(Musica *musica, int capacidade){
 }
 
 void BuscaPorParte(Musica *musica, int capacidade){
-    cin.ignore();
     string trecho;
     Enunciados(203);
     getline(cin, trecho);
@@ -328,72 +331,53 @@ void Salvar(Musica* musicas, int tamanho, string nome_arquivo){
     }
 }
 
-int Valida_artista(Musica *musica, int capacidade){
-    cin.ignore(); 
-    int i = 0, posicao = -1;
-    string nomeA, nomeM, nome;
-    string artista; 
-    Enunciados(202);
-    getline(cin, nomeA);
-    nomeA = Minusculo(Retira_acentos(nomeA));
+int Encontra_musica_para_apagar(Musica *musica, int capacidade){
 
+    string nome_artista, nome_musica;
     bool achou = false;
+    int posicao_musica = -1;
+    int i = 0;
 
-    while(i < capacidade and !achou){
-        artista = Minusculo(Retira_acentos(musica[i].artista));
-        if(Achar_posicao(artista, nomeA)){
+    Enunciados(501);
+    getline(cin, nome_musica);
+    nome_musica = Minusculo(Retira_acentos(nome_musica));
+    Enunciados(502);
+    getline(cin, nome_artista);
+    nome_artista = Minusculo(Retira_acentos(nome_artista));
+
+    for(i = 0; i < capacidade; i++){
+        if (nome_musica == Minusculo(Retira_acentos(musica[i].nome)) && nome_artista == Minusculo(Retira_acentos(musica[i].artista))){
+            posicao_musica = i;
             achou = true;
-            Enunciados(201);
-            getline(cin, nomeM);
-            nomeM = Minusculo(Retira_acentos(nomeM));
-
-            bool achouM = false;
-            Linha();
-            int j = 0;
-
-            while(j < capacidade and !achouM){
-                nome = Minusculo(Retira_acentos(musica[j].nome));
-
-                if(Achar_posicao(nome, nomeM)){
-                    achouM = true;
-                    posicao = j;
-                    cout << NEGRITO << "  Musica a ser deletada: " << RESET << endl << endl;
-                    cout << "  Artista: " << musica[i].artista << endl
-                            << "  Música: " << musica[j].nome << endl;
-                            Linha();
-                }
-            j++;
-            }
-            if(!achouM){
-                Mensagem_de_erro(501);
-            }
         }
-        i++;
     }
-
     if(!achou){
         Mensagem_de_erro(502);
     }
 
-    return posicao;
+    return posicao_musica;
 }
 
 void Apaga_musica(Musica* &musicas, int capacidade, int &tamanho, string nome_arquivo){
     int opcao = 0, posicao = -1, j = 0;
+    string opcao_string;
     Musica* nova_playlist = new Musica[capacidade];
        
-    posicao = Valida_artista(musicas, tamanho);
+    posicao = Encontra_musica_para_apagar(musicas, tamanho);
 
     while((opcao < 1 or opcao > 2) and !(posicao < 0)){
 
-        Menu(50, musicas[posicao].nome);
+        Menu(50, musicas[posicao].nome, musicas[posicao].artista);
 
-        while (!(cin >> opcao)) {
+        getline(cin, opcao_string);
+        while (opcao_string.size() > 1 or !E_um_numero(opcao_string[0])) {
             Mensagem_de_erro(0);
-            cin.clear(); 
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            Menu(50);
+
+            Menu(30);
+            getline(cin, opcao_string);
         }
+        opcao = stoi(opcao_string);
+
         switch (opcao){
         case 1:
             for(int i = 0; i < tamanho; i++){
@@ -414,28 +398,42 @@ void Apaga_musica(Musica* &musicas, int capacidade, int &tamanho, string nome_ar
             break;
         }
     }
-
+    if(posicao < 0){
+        Mensagem_de_erro(501);
+    }
 }
 bool Valida_duracao(string duracao){
     bool validado = true;
     bool dois_pontos = false;
     bool segunda_parte = false;
-    int cont_a = 0, cont_b = 0;
+    bool nao_e_numero = false;
+    int cont_a = 0, cont_b = 0, cont_c = 0;
+    int secao = 0, contagem = 0, k = -1;
+    string tempo;
 
-    if(duracao.size() = 4 or duracao.size() = 5){
+    if(duracao.size() >= 4 or duracao.size() <= 8){
         for(int i = 0; i < duracao.size(); i++){
-            if(duracao[i] == ':')
+            if(duracao[i] == ':'){
                 dois_pontos = true;
+                contagem ++;
+            }
+            else if(!(E_um_numero(duracao[i]))){
+                validado = false;
+                nao_e_numero = !E_um_numero(duracao[i]);
+            }
         }
-        if(dois_pontos){
+        if(dois_pontos && contagem <= 2){
             for(int i = 0; i < duracao.size(); i++){
                 if(duracao[i] == ':')
-                    segunda_parte = true;
-                else if(segunda_parte)
+                    secao++;
+                else if(secao == 2)
+                    cont_c++;
+                else if(secao == 1)
                     cont_b++;
-                else
+                else if(secao == 0)
                     cont_a++;
             }
+
         }
         else{
             validado = false;
@@ -444,15 +442,74 @@ bool Valida_duracao(string duracao){
     else
         validado = false;
 
-    if(cont_a < 1 or cont_a > 2 or cont_b < 2 or cont_b > 2)
+    if((((cont_a < 1 or cont_a > 2) or (cont_b != 2)) or !(cont_c == 2 or cont_c == 0)) or nao_e_numero)
         validado = false;
+    else{
+        if(cont_c == 2){
+            // horas
+            if (cont_a == 1){
+                tempo = duracao[0];
+            }
+            else{            
+                tempo = duracao[0];
+                tempo += duracao[1];
+            }
+            if(stoi(tempo) > 23){
+                validado = false;
+            }
+            // Minutos
+            tempo = duracao[cont_a + 1];
+            tempo += duracao[cont_a + 2];
+            if(stoi(tempo) > 59){
+                validado = false;
+            }
+            // Minutos
+            tempo = duracao[cont_a + cont_b + 2];
+            tempo += duracao[cont_a + cont_b + 3];
+            if(stoi(tempo) > 59){
+                validado = false;
+            }
+        }
+        else{
+            // minutos
+            if (cont_a == 1){
+                tempo = duracao[0];
+            }
+            else{            
+                tempo = duracao[0];
+                tempo += duracao[1];
+            }
+            if(stoi(tempo) > 59){
+                validado = false;
+            }
+            // Segundos
+            tempo = duracao[cont_a + 1];
+            tempo += duracao[cont_a + 2];
+            if(stoi(tempo) > 59){
+                validado = false;
+            }
+        }
+    }
 
     return validado;
 }
 
-void limpaBuffer() {
-    cin.clear();
-    cin.ignore(1000, '\n');
+// bool Valida_ano(int ano){
+//     bool validado = true;
+//     if(ano > 2025 or ano < 0){
+//         validado = false;
+//     }
+
+//     return validado;
+// }
+
+bool Valida_ano(int ano){
+    bool validado = true;
+    if(ano > 2025 or ano < 0){
+        validado = false;
+    }
+
+    return validado;
 }
 
 void Adicionar_nova_musica (Musica* &musicas, int &capacidade, int &numero_de_musicas){
@@ -474,7 +531,7 @@ void Adicionar_nova_musica (Musica* &musicas, int &capacidade, int &numero_de_mu
 				nome_musica_igual = true;
 			}
 		}
-        Enunciados(402); // Nomme do artista
+        Enunciados(402); // Nome do artista
 		getline(cin, musicas[i].artista);
 		for (int j = 0; j < numero_de_musicas; j++){
 			if (Minusculo(musicas[i].artista) == Minusculo(musicas[j].artista)){
@@ -502,8 +559,16 @@ void Adicionar_nova_musica (Musica* &musicas, int &capacidade, int &numero_de_mu
 	}
 	limpaBuffer();
 	
-    Enunciados(404); // Duração
-	getline(cin, musicas[i].duracao);
+    ok = false;
+    while(!ok){
+        Enunciados(404); // Duração
+        getline(cin, musicas[i].duracao);
+        if (Valida_duracao(musicas[i].duracao)) {
+			ok = true;
+		} else {
+			cout << "Valor inválido! Digite uma duração dentro do\npadrão de horas comum (xx:xx:xx)\n";
+		}
+    }
 	
 	ok = false;
     Enunciados(405); // Número de vizualizações

@@ -27,7 +27,7 @@ int main(){
         Menu(0);
         // Caso o usuário digite uma letra dá erro
         getline(cin, opcao_string);
-        while (!(Valida_opcao(opcao_string))) {
+        while (opcao_string.size() > 1 or !E_um_numero(opcao_string[0])) {
             Mensagem_de_erro(0);
 
             Menu(0);
@@ -47,7 +47,7 @@ int main(){
 
                     // Caso o usuário digite uma letra dá erro
                     getline(cin, opcao_string);
-                    while (!(Valida_opcao(opcao_string))) {
+                    while (opcao_string.size() > 1 or !E_um_numero(opcao_string[0])) {
                         Mensagem_de_erro(0);
 
                         Menu(10);
@@ -75,7 +75,7 @@ int main(){
                             Enunciados(101, numero_de_musicas);
                             // Caso o usuário digite uma letra dá erro
                             getline(cin, opcao_string);
-                            while (!(Valida_opcao(opcao_string))) {
+                            while (!Valida_opcao(opcao_string)) {
                                 Mensagem_de_erro(0);
 
                                 Enunciados(101, numero_de_musicas);
@@ -90,7 +90,7 @@ int main(){
                             Enunciados(102, numero_de_musicas);
                             // Caso o usuário digite uma letra dá erro
                             getline(cin, opcao_string);
-                            while (!(Valida_opcao(opcao_string))) {
+                            while (!Valida_opcao(opcao_string)) {
                                 Mensagem_de_erro(0);
 
                                 Enunciados(102, numero_de_musicas);
@@ -131,7 +131,7 @@ int main(){
                     
                     // Caso o usuário digite uma letra dá erro
                     getline(cin, opcao_string);
-                    while (!(Valida_opcao(opcao_string))) {
+                    while (opcao_string.size() > 1 or !E_um_numero(opcao_string[0])) {
                         Mensagem_de_erro(0);
 
                         Menu(20);
@@ -177,7 +177,7 @@ int main(){
                     Menu(30);    
                     // Caso o usuário digite uma letra dá erro
                     getline(cin, opcao_string);
-                    while (!(Valida_opcao(opcao_string))) {
+                    while (opcao_string.size() > 1 or !E_um_numero(opcao_string[0])) {
                         Mensagem_de_erro(0);
 
                         Menu(30);
@@ -228,20 +228,42 @@ int main(){
             case 7:
                 Saindo();
                 break;
-            case 10122005: // APAGAR ESSA PARTE
+            case 9: // APAGAR ESSA PARTE
                 Linha();
                 cout  << RESET << "--------- Dados gerais do banco de dados ---------" << endl;
                 cout << "Tamanho do banco de dados: " << COR_CANCELAR << capacidade << RESET << endl;
                 cout << "Número de músicas: " << COR_CANCELAR << numero_de_musicas << RESET << endl << endl;
 
-                cout << "TESTE FUNÇÃO Valida_duracao():" << endl;
-                cout << "12:3 ->\t" << COR_CANCELAR << Valida_duracao("12:3") << RESET << endl;
-                cout << "12:12 ->\t" << COR_CANCELAR << Valida_duracao("12:12") << RESET << endl;
-                cout << "55:888 ->\t" << COR_CANCELAR << Valida_duracao("55:888") << RESET << endl;
-                cout << "1:27 ->\t" << COR_CANCELAR << Valida_duracao("1:27") << RESET << endl;
-                cout << "1:190 ->\t" << COR_CANCELAR << Valida_duracao("1:190") << RESET << endl;
+                // cout << "TESTE FUNÇÃO Valida_duracao():" << endl;
 
+                // Imprime_formatado("Primeira parte - formatação x:xx ou xx:xx");
+                // cout << "12:3   ->\t" << COR_CANCELAR << Valida_duracao("12:3") << RESET << endl;
+                // cout << "   12:12  ->\t" << COR_CANCELAR << Valida_duracao("12:12") << RESET << endl;
+                // cout << "   55:888 ->\t" << COR_CANCELAR << Valida_duracao("55:888") << RESET << endl;
+                // cout << "   1:27   ->\t" << COR_CANCELAR << Valida_duracao("1:27") << RESET << endl;
+                // cout << "   1:190  ->\t" << COR_CANCELAR << Valida_duracao("1:190") << RESET << endl;
 
+                // Imprime_formatado("Segunda parte - Exclusão de letras e caracteres especiais");
+                // cout << "12:xx  ->\t" << COR_CANCELAR << Valida_duracao("12:xx") << RESET << endl;
+                // cout << "   x:12   ->\t" << COR_CANCELAR << Valida_duracao("x:12") << RESET << endl;
+                // cout << "   50:x8  ->\t" << COR_CANCELAR << Valida_duracao("50:x8") << RESET << endl;
+                // cout << "   1:2x   ->\t" << COR_CANCELAR << Valida_duracao("1:2x") << RESET << endl;
+                // cout << "   1x:19  ->\t" << COR_CANCELAR << Valida_duracao("1x:19") << RESET << endl;
+
+                // Imprime_formatado("Terceira parte - Limite por tempo");
+                // cout << "10:70  ->\t" << COR_CANCELAR << Valida_duracao("10:70") << RESET << endl;
+                // cout << "   90:00   ->\t" << COR_CANCELAR << Valida_duracao("90:00") << RESET << endl;
+                // cout << "   50:88  ->\t" << COR_CANCELAR << Valida_duracao("50:88") << RESET << endl;
+                // cout << "   88:01   ->\t" << COR_CANCELAR << Valida_duracao("88:01") << RESET << endl;
+                // cout << "   1:60  ->\t" << COR_CANCELAR << Valida_duracao("1:60") << RESET << endl;
+
+                // Imprime_formatado("Quarta parte - formatação x:xx:xx ou xx:xx:xx");
+                // cout << "12:10:50     ->\t" << COR_CANCELAR << Valida_duracao("12:10:50") << RESET << endl;
+                // cout << "   44::59     ->\t" << COR_CANCELAR << Valida_duracao("44::59") << RESET << endl;
+                // cout << "   1:5770:20  ->\t" << COR_CANCELAR << Valida_duracao("1:5770:20") << RESET << endl;
+                // cout << "   1:5x0:20   ->\t" << COR_CANCELAR << Valida_duracao("1:5x0:20") << RESET << endl;
+                // cout << "   1:21       ->\t" << COR_CANCELAR << Valida_duracao("1:21") << RESET << endl;
+                // cout << "   1:20:34    ->\t" << COR_CANCELAR << Valida_duracao("1:20:34") << RESET << endl;
                 break;
 
             default:

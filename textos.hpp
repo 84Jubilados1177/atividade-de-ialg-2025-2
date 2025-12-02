@@ -65,7 +65,7 @@ void Digita_lento(const string& texto, float milissegundos_por_letra) {
     }
 }
 
-void Menu(int numero, string musica = ""){
+void Menu(int numero, string musica = "", string artista = ""){
     cout << RESET;
 
     switch (numero){
@@ -110,7 +110,7 @@ void Menu(int numero, string musica = ""){
         break; 
     case 50:
         Linha();
-        Imprime_formatado("Você tem certeza de que deseja apagar a música " + musica + "?", 50, 0);
+        Imprime_formatado("Você tem certeza de que deseja apagar a música " + musica + " do(s) artista " + artista + "?", 50, 0);
         cout << endl << COR_OPCOES << "(1)" << RESET << " Sim" << endl;
         cout << COR_CANCELAR << "(2)" << RESET << " Cancelar" << endl;
         Linha();
@@ -186,6 +186,14 @@ void Enunciados(int numero, int auxiliar1 = 0, int auxiliar2 = 0){
         Linha();
         cout << "Digite a parte que mais gosta da música (Separe os versos com \".\" ou \";\"): ";
         break;
+    case 501:
+        Linha();
+        cout << "Digite o nome da musica: ";
+        break;
+    case 502:
+        Linha();
+        cout << "Digite o nome do(s) artista(s): ";
+        break;
     case 600:
         Linha();
         cout << "Playlist salva com sucesso!" << endl;
@@ -229,7 +237,7 @@ void Mensagem_de_erro(int erro){
         break;
     case 502:
         Linha();
-        cout << "Esse artista não existe no banco de dados." << endl;
+        cout << "Nenhuma música encontrada com esse nome e artista.\n";
         break;
     default:
         Linha();
