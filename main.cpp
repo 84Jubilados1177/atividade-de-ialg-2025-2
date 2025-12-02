@@ -8,25 +8,6 @@
 #include "funcoes.hpp"
 using namespace std;
 
-bool E_um_numero(char caractere){
-    if(caractere < '0' || caractere > '9')
-        return false;
-    
-    return true;
-}
-
-bool Valida_opcao(string str){
-    int  i = 0;
-    bool e_numero = true;
-    char c;
-    while(i < str.size()){
-        c = str[i];
-        if(!(E_um_numero(c)))
-            e_numero = false;
-        i++;
-    }
-    return e_numero;
-}
 
 int main(){
     string nome_arquivo = "banco_de_dados.csv";
@@ -251,7 +232,16 @@ int main(){
                 Linha();
                 cout  << RESET << "--------- Dados gerais do banco de dados ---------" << endl;
                 cout << "Tamanho do banco de dados: " << COR_CANCELAR << capacidade << RESET << endl;
-                cout << "Número de músicas: " << COR_CANCELAR << numero_de_musicas << RESET << endl;
+                cout << "Número de músicas: " << COR_CANCELAR << numero_de_musicas << RESET << endl << endl;
+
+                cout << "TESTE FUNÇÃO Valida_duracao():" << endl;
+                cout << "12:3 ->\t" << COR_CANCELAR << Valida_duracao("12:3") << RESET << endl;
+                cout << "12:12 ->\t" << COR_CANCELAR << Valida_duracao("12:12") << RESET << endl;
+                cout << "55:888 ->\t" << COR_CANCELAR << Valida_duracao("55:888") << RESET << endl;
+                cout << "1:27 ->\t" << COR_CANCELAR << Valida_duracao("1:27") << RESET << endl;
+                cout << "1:190 ->\t" << COR_CANCELAR << Valida_duracao("1:190") << RESET << endl;
+
+
                 break;
 
             default:

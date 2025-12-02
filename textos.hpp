@@ -158,6 +158,34 @@ void Enunciados(int numero, int auxiliar1 = 0, int auxiliar2 = 0){
         Linha();
         cout << "Playlist ordenada!" << endl;
         break;
+    case 401:
+        Linha();
+		cout << "Digite o nome da música: ";
+        break;
+    case 402:
+        Linha();
+		cout << "Digite o nome do artista: ";
+        break;
+    case 403:
+        Linha();
+	    cout << "Digite o ano em que a música foi lançada: ";
+        break;
+    case 404:
+        Linha();
+	    cout << "Digite a duração da música: ";
+        break;
+    case 405:
+        Linha();
+	    cout << "Digite o número de visualizações da música: ";
+        break;
+    case 406:
+        Linha();
+	    cout << "Digite a média de visualizações por ano da música: ";
+        break;
+    case 407:
+        Linha();
+        cout << "Digite a parte que mais gosta da música (Separe os versos com \".\" ou \";\"): ";
+        break;
     case 600:
         Linha();
         cout << "Playlist salva com sucesso!" << endl;

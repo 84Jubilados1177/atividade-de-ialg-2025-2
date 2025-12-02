@@ -54,6 +54,25 @@ string Retira_acentos(const string& str) {
     return temp;
 }
 
+bool E_um_numero(char caractere){
+    if(caractere < '0' || caractere > '9')
+        return false;
+    
+    return true;
+}
+
+bool Valida_opcao(string str){
+    int  i = 0;
+    bool e_numero = true;
+    char c;
+    while(i < str.size()){
+        c = str[i];
+        if(!(E_um_numero(c)))
+            e_numero = false;
+        i++;
+    }
+    return e_numero;
+}
 
 void Redimensionamento(Musica* &musica, int tamanho_anterior){
     Musica* novo_vetor = new Musica[tamanho_anterior+5];
@@ -397,6 +416,40 @@ void Apaga_musica(Musica* &musicas, int capacidade, int &tamanho, string nome_ar
     }
 
 }
+bool Valida_duracao(string duracao){
+    bool validado = true;
+    bool dois_pontos = false;
+    bool segunda_parte = false;
+    int cont_a = 0, cont_b = 0;
+
+    if(duracao.size() = 4 or duracao.size() = 5){
+        for(int i = 0; i < duracao.size(); i++){
+            if(duracao[i] == ':')
+                dois_pontos = true;
+        }
+        if(dois_pontos){
+            for(int i = 0; i < duracao.size(); i++){
+                if(duracao[i] == ':')
+                    segunda_parte = true;
+                else if(segunda_parte)
+                    cont_b++;
+                else
+                    cont_a++;
+            }
+        }
+        else{
+            validado = false;
+        }
+    }
+    else
+        validado = false;
+
+    if(cont_a < 1 or cont_a > 2 or cont_b < 2 or cont_b > 2)
+        validado = false;
+
+    return validado;
+}
+
 void limpaBuffer() {
     cin.clear();
     cin.ignore(1000, '\n');
@@ -413,7 +466,7 @@ void Adicionar_nova_musica (Musica* &musicas, int &capacidade, int &numero_de_mu
 	while (voltar){
 		bool artista_igual = false;
 		bool nome_musica_igual = false;
-		cout << "Digite o nome da música: ";
+        Enunciados(401); // Nome da música
 		cin.ignore();
 		getline(cin, musicas[i].nome);
 		for (int j = 0; j < numero_de_musicas; j++){
@@ -421,7 +474,7 @@ void Adicionar_nova_musica (Musica* &musicas, int &capacidade, int &numero_de_mu
 				nome_musica_igual = true;
 			}
 		}
-		cout << "Digite o nome do artista: ";
+        Enunciados(402); // Nomme do artista
 		getline(cin, musicas[i].artista);
 		for (int j = 0; j < numero_de_musicas; j++){
 			if (Minusculo(musicas[i].artista) == Minusculo(musicas[j].artista)){
@@ -437,7 +490,7 @@ void Adicionar_nova_musica (Musica* &musicas, int &capacidade, int &numero_de_mu
 	}
 	
 	bool ok = false;
-	cout << "Digite o ano em que a música foi lançada: ";
+    Enunciados(403); // Ano de lançamento
 	while (!ok) {
 		cin >> musicas[i].ano;
 		if (!cin.fail()) {
@@ -449,11 +502,11 @@ void Adicionar_nova_musica (Musica* &musicas, int &capacidade, int &numero_de_mu
 	}
 	limpaBuffer();
 	
-	cout << "Digite a duração da música: ";
+    Enunciados(404); // Duração
 	getline(cin, musicas[i].duracao);
 	
 	ok = false;
-	cout << "Digite o número de visualizações da música: ";
+    Enunciados(405); // Número de vizualizações
 	while (!ok) {
 		cin >> musicas[i].views;
 		if (!cin.fail()) {
@@ -466,7 +519,7 @@ void Adicionar_nova_musica (Musica* &musicas, int &capacidade, int &numero_de_mu
 	limpaBuffer();
 	
 	ok = false;
-	cout << "Digite a média de visualizações por ano da música: ";
+    Enunciados(406); // Media de vizualizações por ano
 	while (!ok) {
 		cin >> musicas[i].media_views;
 		if (!cin.fail()) {
@@ -477,7 +530,7 @@ void Adicionar_nova_musica (Musica* &musicas, int &capacidade, int &numero_de_mu
 		}
 	}
 	limpaBuffer();
-	cout << "Digite a parte que mais gosta da música (Separe os versos com \".\" ou \";\"): ";	
+    Enunciados(407); // Parte mais tocada
 	do{
 		getline(cin, musicas[i].descricao);
 		if (musicas[i].descricao.size() == 0)
