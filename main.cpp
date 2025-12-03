@@ -10,6 +10,19 @@ using namespace std;
 
 
 int main(){
+    int linhas = 20;  // Altura da janela (deve comportar o Menu principal - (0))
+    int colunas = 50; // Largura do nosso texto
+
+    /* "\033[8;20;50t"
+
+        \033:   caractere invisível (caractere de Escape).
+        [8;:    Sequência literal que especifica a operação de redimensionamento de janela.
+        t:      O caractere que executa o comando.
+    */
+    string comando_de_redimensionamento = PROPORCAO_JANELA + to_string(linhas) + ";" + to_string(colunas) + "t";
+    cout << comando_de_redimensionamento;
+    cout.flush();
+
     string nome_arquivo = "banco_de_dados.csv";
     string lixo;
     string opcao_string;
@@ -24,13 +37,13 @@ int main(){
 
     system("clear");
     while (opcao_menu_int != 7){
-        Menu(0);
+        Menu(0); // Menu principal
         // Caso o usuário digite uma letra dá erro
         getline(cin, opcao_string);
         while (opcao_string.size() > 1 or !E_um_numero(opcao_string[0])) {
             Mensagem_de_erro(0);
 
-            Menu(0);
+            Menu(0); // Menu principal
             getline(cin, opcao_string);
         }
         opcao_menu_int = stoi(opcao_string);
@@ -227,6 +240,16 @@ int main(){
                 break;
             case 7:
                 Saindo();
+                colunas = 80;
+                linhas = 24;
+
+                comando_de_redimensionamento = PROPORCAO_JANELA + to_string(linhas) + ";" + to_string(colunas) + "t";
+                cout << comando_de_redimensionamento;
+                cout.flush();
+
+                Linha();
+                cout << endl;
+
                 break;
             case 9: // APAGAR ESSA PARTE
                 Linha();

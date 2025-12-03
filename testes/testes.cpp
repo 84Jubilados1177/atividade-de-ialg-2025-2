@@ -21,17 +21,21 @@ int main() {
     int v_lenta = 100;
     int v__muito_lenta = 500;
 
-    cout << "Rápido:" << endl;
-    digitar_letra_por_letra(mensagem, v_rapida);
+    string teste;
 
-    cout << "Médio:" << endl;
-    digitar_letra_por_letra(mensagem, v_media);
+    getline(cin, teste);
+    cout << teste << endl;
+    // cout << "Rápido:" << endl;
+    // digitar_letra_por_letra(mensagem, v_rapida);
 
-    cout << "Lento:" << endl;
-    digitar_letra_por_letra(mensagem, v_lenta);
+    // cout << "Médio:" << endl;
+    // digitar_letra_por_letra(mensagem, v_media);
 
-    cout << "Muito lento:" << endl;
-    digitar_letra_por_letra(mensagem, v_lenta);
+    // cout << "Lento:" << endl;
+    // digitar_letra_por_letra(mensagem, v_lenta);
+
+    // cout << "Muito lento:" << endl;
+    // digitar_letra_por_letra(mensagem, v_lenta);
 
     return 0;
 }

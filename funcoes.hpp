@@ -7,18 +7,10 @@
 #include <string>
 #include <fstream>
 #include <limits>
+#include <cmath>
 #include <map>
+#include <cstdlib>
 using namespace std;
-
-struct Musica {
-    string nome;
-    string artista;
-    string duracao;
-    int ano;
-    long long views;
-    double media_views;
-    string descricao;
-};
 
 const map<string, string> MAPA_ACENTOS = {
     // Minúsculas
@@ -402,6 +394,16 @@ void Apaga_musica(Musica* &musicas, int capacidade, int &tamanho, string nome_ar
         Mensagem_de_erro(501);
     }
 }
+
+bool Valida_ano(int ano){
+    bool validado = true;
+    if(ano > 2025 or ano < 0){
+        validado = false;
+    }
+
+    return validado;
+}
+
 bool Valida_duracao(string duracao){
     bool validado = true;
     bool dois_pontos = false;
@@ -494,6 +496,15 @@ bool Valida_duracao(string duracao){
     return validado;
 }
 
+bool Valida_visualizacoes(int visualizacoes){
+    bool validado = false;
+
+    if(visualizacoes >= 0 && visualizacoes <= 9223372036854775807) // limite do Long long ~
+        validado = true;
+
+    return validado;
+}
+
 // bool Valida_ano(int ano){
 //     bool validado = true;
 //     if(ano > 2025 or ano < 0){
@@ -503,18 +514,25 @@ bool Valida_duracao(string duracao){
 //     return validado;
 // }
 
-bool Valida_ano(int ano){
-    bool validado = true;
-    if(ano > 2025 or ano < 0){
-        validado = false;
-    }
 
-    return validado;
-}
+/*
+    system("clear");
+    cout << "Nome da música: " << musica.nome << endl;
+    cout << "Nome do(s) artista(s): " << musica.artista << endl;
+    cout << "Duração da música: " << musica.artista << endl;
+    cout << "Ano de lançamento: " << musica.ano << endl;
+    cout << "Número de visualizações: " << musica.views << endl;
+    cout << "Média de vizualizações: " << musica.media_views << endl;
+    cout << "Parte mais escutada: " << musica.descricao << endl;
+    Linha();
+*/
 
 void Adicionar_nova_musica (Musica* &musicas, int &capacidade, int &numero_de_musicas){
 	int i = numero_de_musicas;
+    string intermediario;
 	bool voltar = true;
+	bool ok = false;
+
 	if (numero_de_musicas == capacidade){
 		Redimensionamento(musicas, capacidade);
         capacidade +=5 ;
@@ -523,14 +541,17 @@ void Adicionar_nova_musica (Musica* &musicas, int &capacidade, int &numero_de_mu
 	while (voltar){
 		bool artista_igual = false;
 		bool nome_musica_igual = false;
+
+        Interface(musicas[i]);
         Enunciados(401); // Nome da música
-		cin.ignore();
 		getline(cin, musicas[i].nome);
 		for (int j = 0; j < numero_de_musicas; j++){
 			if (Minusculo(musicas[i].nome) == Minusculo(musicas[j].nome)){
 				nome_musica_igual = true;
 			}
 		}
+
+        Interface(musicas[i]);
         Enunciados(402); // Nome do artista
 		getline(cin, musicas[i].artista);
 		for (int j = 0; j < numero_de_musicas; j++){
@@ -546,62 +567,71 @@ void Adicionar_nova_musica (Musica* &musicas, int &capacidade, int &numero_de_mu
 		}
 	}
 	
-	bool ok = false;
+    ok = false;
+    Interface(musicas[i]);
     Enunciados(403); // Ano de lançamento
 	while (!ok) {
 		cin >> musicas[i].ano;
-		if (!cin.fail()) {
+        cout << "preso" << endl;
+		if (!cin.fail() and Valida_ano(musicas[i].ano)) {
 			ok = true;
 		} else {
-			cout << "Valor inválido! Digite um ano inteiro: ";
+			Mensagem_de_erro(403);
+            musicas[i].ano = 0;
 			limpaBuffer();
+            Interface(musicas[i]);
+            Enunciados(403); // Ano de lançamento
 		}
 	}
 	limpaBuffer();
 	
     ok = false;
     while(!ok){
+        Interface(musicas[i]);
         Enunciados(404); // Duração
         getline(cin, musicas[i].duracao);
         if (Valida_duracao(musicas[i].duracao)) {
 			ok = true;
 		} else {
-			cout << "Valor inválido! Digite uma duração dentro do\npadrão de horas comum (xx:xx:xx)\n";
+			Mensagem_de_erro(404);
+            musicas[i].duracao = "";
+            Interface(musicas[i]);
+            Enunciados(404); // Ano de lançamento
 		}
     }
 	
 	ok = false;
+    Interface(musicas[i]);
     Enunciados(405); // Número de vizualizações
 	while (!ok) {
 		cin >> musicas[i].views;
-		if (!cin.fail()) {
+		if (!cin.fail() and Valida_visualizacoes(musicas[i].views)) {
 			ok = true;
 		} else {
-			cout << "Valor inválido! Digite um número inteiro: ";
+			Mensagem_de_erro(405);
+            musicas[i].views = 0;
 			limpaBuffer();
+            Interface(musicas[i]);
+            Enunciados(405); // Ano de lançamento
 		}
 	}
+
+    // Media de vizualizações por ano
+    if(musicas[i].ano == 2025)
+        musicas[i].media_views = musicas[i].views;
+    else
+        musicas[i].media_views = round((musicas[i].views / (2025 - musicas[i].ano)) * 10000.0) / 10000.0;	
 	limpaBuffer();
-	
 	ok = false;
-    Enunciados(406); // Media de vizualizações por ano
-	while (!ok) {
-		cin >> musicas[i].media_views;
-		if (!cin.fail()) {
-			ok = true;
-		} else {
-			cout << "Valor inválido! Digite um numero inteiro ou quebrado: ";
-			limpaBuffer();
-		}
-	}
-	limpaBuffer();
-    Enunciados(407); // Parte mais tocada
+    Interface(musicas[i]);
+    Enunciados(406); // Parte mais tocada
 	do{
 		getline(cin, musicas[i].descricao);
 		if (musicas[i].descricao.size() == 0)
-			cout << "A descrição não pode ser vazia! Digite pelo menos um espaço: ";
-		}while (musicas[i].descricao.size() == 0);
-	cout << endl << "Música adicionada!";
+            Mensagem_de_erro(406);
+	}while (musicas[i].descricao.size() == 0);
+	
+    Enunciados(408); //123123123
 		
 	numero_de_musicas++;
 }

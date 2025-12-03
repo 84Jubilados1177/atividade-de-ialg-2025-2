@@ -3,16 +3,27 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
-#define COR_CANCELAR    "\033[1m\033[31m"
-#define COR_OPCOES      "\033[1m\033[96m"
-#define RESET           "\033[0m"
-#define COR_USUARIO     "\033[1m\033[153;153;153m"
-#define NEGRITO     "\033[1m"
+#define COR_CANCELAR        "\033[1m\033[31m"
+#define COR_OPCOES          "\033[1m\033[96m"
+#define RESET               "\033[0m"
+#define COR_USUARIO         "\033[1m\033[153;153;153m"
+#define NEGRITO             "\033[1m"
+#define PROPORCAO_JANELA    "\033[8;"
 using namespace std;
+
+struct Musica {
+    string nome = "";
+    string artista = "";
+    string duracao = "";
+    int ano = 0;
+    long long views = 0;
+    double media_views = 0;
+    string descricao = "";
+};
 
 void Linha(){
     cout << RESET;
-    cout << "--------------------------------------------------" << endl;
+    cout << "――――――――――――――――――――――――――――――――――――――――――――――――――" << endl;
 }
 
 void Imprime_formatado(const string &texto, int lim = 47, int spaces = 3) {
@@ -70,7 +81,7 @@ void Menu(int numero, string musica = "", string artista = ""){
 
     switch (numero){
     case 0:
-        cout << "---------------------- MENU ----------------------" << endl;
+        cout << "―――――――――――――――― MENU DA PLAYLIST ――――――――――――――――" << endl;
         cout << COR_OPCOES << "(1)" << RESET << " Exibir playlist" << endl;
         cout << COR_OPCOES << "(2)" << RESET << " Buscar na playlist" << endl;
         cout << COR_OPCOES << "(3)" << RESET << " Ordenar playlist" << endl;
@@ -124,79 +135,106 @@ void Menu(int numero, string musica = "", string artista = ""){
     }
 }
 
+void Interface(Musica musica){
+    system("clear");
+    cout << RESET;
+    
+    cout << "Nome da música: " << musica.nome << endl;
+    cout << "Nome do(s) artista(s): " << musica.artista << endl;
 
-void Enunciados(int numero, int auxiliar1 = 0, int auxiliar2 = 0){
+    if(musica.ano != 0)
+        cout << "Ano de lançamento: " << musica.ano << endl;
+    else    
+        cout << "Ano de lançamento: " << endl;
+
+    cout << "Duração da música: " << musica.duracao << endl;
+
+    if(musica.views != 0)
+        cout << "Número de visualizações: " << musica.views << endl;
+    else    
+        cout << "Número de visualizações: " << endl;
+
+    if(musica.media_views != 0){
+        cout << fixed << setprecision(4); 
+        cout << "Média de visualizações por ano: " << musica.media_views << endl;
+    }
+    else    
+        cout << "Média de visualizações por ano: " << endl;
+    
+    cout << "Parte mais escutada: " << musica.descricao << endl;
+
+    Linha();
+}
+
+void Enunciados(int numero, int auxiliar1 = 0){
     cout << RESET;
     switch (numero)
     {
     case 101:
         Linha();
         cout << "Digite um índice entre 1 e " << auxiliar1 << ": \n";
-        cout  << COR_USUARIO;
         break;
     case 102:
         Linha();
         cout << "Digite outro índice entre 1 e " << auxiliar1 << ": \n";
-        cout  << COR_USUARIO;
         break;
     case 201:
         Linha();
         cout << "Insira o nome ou um trecho do nome da música: \n";
-        cout  << COR_USUARIO;
         break;
     case 202:
         Linha();
         cout << "Insira o nome do artista: \n";
-        cout  << COR_USUARIO;
         break;
     case 203:
         Linha();
         cout << "Insira o trecho da música: \n";
-        cout  << COR_USUARIO;
         break;
     case 300:
         Linha();
         cout << "Playlist ordenada!" << endl;
         break;
+    case 400:
+        // Nada por enquanto
+        break;
     case 401:
-        Linha();
 		cout << "Digite o nome da música: ";
         break;
     case 402:
-        Linha();
 		cout << "Digite o nome do artista: ";
         break;
     case 403:
-        Linha();
 	    cout << "Digite o ano em que a música foi lançada: ";
         break;
     case 404:
-        Linha();
 	    cout << "Digite a duração da música: ";
         break;
     case 405:
-        Linha();
-	    cout << "Digite o número de visualizações da música: ";
+	    cout << "Digite o número de visualizações: ";
         break;
     case 406:
-        Linha();
-	    cout << "Digite a média de visualizações por ano da música: ";
-        break;
-    case 407:
-        Linha();
         cout << "Digite a parte que mais gosta da música (Separe os versos com \".\" ou \";\"): ";
         break;
+    case 408:
+        system("clear");
+        Linha();
+        cout << "Música adicionada com sucesso!" << endl;
+        Linha();
+        break;
     case 501:
+        system("clear");
         Linha();
         cout << "Digite o nome da musica: ";
         break;
     case 502:
+        system("clear");
         Linha();
         cout << "Digite o nome do(s) artista(s): ";
         break;
     case 600:
         Linha();
         cout << "Playlist salva com sucesso!" << endl;
+        Linha();
         break;
     case 112:
         /* code  */
@@ -207,9 +245,12 @@ void Enunciados(int numero, int auxiliar1 = 0, int auxiliar2 = 0){
         cout << "ERRO INVÁLIDO" << endl;
         break;
     }
+
+    cout  << COR_USUARIO;
 }
 
 void Mensagem_de_erro(int erro){
+    float tempo_padrao = 0.633;
     system("clear");
     cout << RESET;
     switch (erro){
@@ -232,6 +273,39 @@ void Mensagem_de_erro(int erro){
         cout << "Índice inválido, por favor insira um índice entre\nos limites solicitados." << endl;
         break;
 
+    case 403:
+        Linha();
+        cout << "Valor inválido! Informe um valor positivo menor\n ou igual a 2025." << endl;
+        Linha();
+        Digita_lento(". . . ", tempo_padrao);
+        break;
+
+    case 404:
+        Linha();
+        cout << "Valor inválido! Digite uma duração dentro do\npadrão de horas comum (xx:xx:xx)" << endl;
+        Linha();
+        Digita_lento(". . . ", tempo_padrao);
+        break;
+
+    case 405:
+        Linha();
+        cout << "Valor inválido! Digite um número inteiro. " << endl;
+        Linha();
+        Digita_lento(". . . ", tempo_padrao);
+        break;
+
+    case 406:
+        Linha();
+		cout << "A descrição não pode ser vazia! Digite pelo menos um espaço: ";
+        Linha();
+        Digita_lento(". . . ", tempo_padrao);
+        break;
+        
+    case 504:
+        Linha();
+        cout << "Nenhuma música encontrada com esse nome e artista.\n";
+        break;
+
     case 501:
         cout << "Essa música não existe no banco de dados." << endl;
         break;
@@ -247,13 +321,14 @@ void Mensagem_de_erro(int erro){
 }
 void Saindo(){
     cout << RESET;
+    system("clear");
+
     Linha();
     Digita_lento("Saindo", 0.1);
     for(int i = 0; i < 3; i++)
         Digita_lento(" .", 0.5);
 
     cout << endl;
-    Linha();
 }
 
 #endif
