@@ -11,7 +11,7 @@ using namespace std;
 
 int main(){
     int linhas = 20;  // Altura da janela (deve comportar o Menu principal - (0))
-    int colunas = 50; // Largura do nosso texto
+    int colunas = 51; // Largura do nosso texto
 
     /* "\033[8;20;50t"
 
@@ -88,7 +88,7 @@ int main(){
                             Enunciados(101, numero_de_musicas);
                             // Caso o usuário digite uma letra dá erro
                             getline(cin, opcao_string);
-                            while (!Valida_opcao(opcao_string)) {
+                            while (opcao_string.size() >= 10 or !Valida_opcao(opcao_string) or opcao_string == "") {
                                 Mensagem_de_erro(0);
 
                                 Enunciados(101, numero_de_musicas);
@@ -103,7 +103,7 @@ int main(){
                             Enunciados(102, numero_de_musicas);
                             // Caso o usuário digite uma letra dá erro
                             getline(cin, opcao_string);
-                            while (!Valida_opcao(opcao_string)) {
+                            while (opcao_string.size() >= 10 or !Valida_opcao(opcao_string) or opcao_string == "") {
                                 Mensagem_de_erro(0);
 
                                 Enunciados(102, numero_de_musicas);
@@ -126,6 +126,7 @@ int main(){
                     // Cancelar
                     case 3:
                         loop = false;
+                        system("clear");
                         break;
                     default:
                         // Caso o usuário digite um número que não seja 1, 2 ou 3
@@ -201,14 +202,17 @@ int main(){
                     switch (opcao_menu_int){
                     case 1: // (1) Ordem alfabética [pelo nome]
                         Ordem_alfabetica_nome(musica, numero_de_musicas);
+                        system("clear");
                         Enunciados(300);
                         break;
                     case 2: // (2) Número total de visualizações
                         Ordem_visualizacoes(musica, numero_de_musicas);
+                        system("clear");
                         Enunciados(300);
                         break;
                     case 3: // (3) Média de vizualizações por ano"
                         Ordem_media_visualizacoes(musica, numero_de_musicas);
+                        system("clear");
                         Enunciados(300);
                         break;
                     case 4:

@@ -154,7 +154,7 @@ void Interface(Musica musica){
     else    
         cout << "Número de visualizações: " << endl;
 
-    if(musica.media_views != 0){
+    if(musica.views != 0){
         cout << fixed << setprecision(4); 
         cout << "Média de visualizações por ano: " << musica.media_views << endl;
     }
@@ -193,6 +193,7 @@ void Enunciados(int numero, int auxiliar1 = 0){
     case 300:
         Linha();
         cout << "Playlist ordenada!" << endl;
+        Linha();
         break;
     case 400:
         // Nada por enquanto
@@ -236,9 +237,6 @@ void Enunciados(int numero, int auxiliar1 = 0){
         cout << "Playlist salva com sucesso!" << endl;
         Linha();
         break;
-    case 112:
-        /* code  */
-        break;
     
     default:
         Linha();
@@ -272,10 +270,15 @@ void Mensagem_de_erro(int erro){
         Linha();
         cout << "Índice inválido, por favor insira um índice entre\nos limites solicitados." << endl;
         break;
-
+    case 400:
+        Linha();
+		cout << "Essa música já existe. Escolha outra!" << endl;
+        Linha();
+        Digita_lento(". . . ", tempo_padrao);
+        break;
     case 403:
         Linha();
-        cout << "Valor inválido! Informe um valor positivo menor\n ou igual a 2025." << endl;
+        cout << "Valor inválido! Informe um valor inteiro positivo\nmenor ou igual a 2025." << endl;
         Linha();
         Digita_lento(". . . ", tempo_padrao);
         break;

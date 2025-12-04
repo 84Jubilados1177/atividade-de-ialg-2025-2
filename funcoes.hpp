@@ -496,7 +496,7 @@ bool Valida_duracao(string duracao){
     return validado;
 }
 
-bool Valida_visualizacoes(int visualizacoes){
+bool Valida_visualizacoes(long long visualizacoes){
     bool validado = false;
 
     if(visualizacoes >= 0 && visualizacoes <= 9223372036854775807) // limite do Long long ~
@@ -505,33 +505,12 @@ bool Valida_visualizacoes(int visualizacoes){
     return validado;
 }
 
-// bool Valida_ano(int ano){
-//     bool validado = true;
-//     if(ano > 2025 or ano < 0){
-//         validado = false;
-//     }
-
-//     return validado;
-// }
-
-
-/*
-    system("clear");
-    cout << "Nome da música: " << musica.nome << endl;
-    cout << "Nome do(s) artista(s): " << musica.artista << endl;
-    cout << "Duração da música: " << musica.artista << endl;
-    cout << "Ano de lançamento: " << musica.ano << endl;
-    cout << "Número de visualizações: " << musica.views << endl;
-    cout << "Média de vizualizações: " << musica.media_views << endl;
-    cout << "Parte mais escutada: " << musica.descricao << endl;
-    Linha();
-*/
-
 void Adicionar_nova_musica (Musica* &musicas, int &capacidade, int &numero_de_musicas){
 	int i = numero_de_musicas;
     string intermediario;
 	bool voltar = true;
 	bool ok = false;
+    bool musica_inexistente = false;
 
 	if (numero_de_musicas == capacidade){
 		Redimensionamento(musicas, capacidade);
@@ -541,12 +520,13 @@ void Adicionar_nova_musica (Musica* &musicas, int &capacidade, int &numero_de_mu
 	while (voltar){
 		bool artista_igual = false;
 		bool nome_musica_igual = false;
+        musica_inexistente = false;
 
         Interface(musicas[i]);
         Enunciados(401); // Nome da música
 		getline(cin, musicas[i].nome);
 		for (int j = 0; j < numero_de_musicas; j++){
-			if (Minusculo(musicas[i].nome) == Minusculo(musicas[j].nome)){
+			if (Minusculo(Retira_acentos(musicas[i].nome)) == Minusculo(Retira_acentos(musicas[j].nome))){
 				nome_musica_igual = true;
 			}
 		}
@@ -555,66 +535,91 @@ void Adicionar_nova_musica (Musica* &musicas, int &capacidade, int &numero_de_mu
         Enunciados(402); // Nome do artista
 		getline(cin, musicas[i].artista);
 		for (int j = 0; j < numero_de_musicas; j++){
-			if (Minusculo(musicas[i].artista) == Minusculo(musicas[j].artista)){
+			if (Minusculo(Retira_acentos(musicas[i].artista)) == Minusculo(Retira_acentos(musicas[j].artista))){
 				artista_igual = true;
 			}
 		}
 		if (artista_igual and nome_musica_igual){
-			cout << "Essa música já existe. Escolha outra!" << endl;
+            Mensagem_de_erro(400);
+            musicas[i].artista = "";
+            musicas[i].nome = "";
+            musica_inexistente = true;
+            voltar = true;
 		}
 		else{
 			voltar = false;
 		}
 	}
 	
-    ok = false;
-    Interface(musicas[i]);
-    Enunciados(403); // Ano de lançamento
-	while (!ok) {
-		cin >> musicas[i].ano;
-        cout << "preso" << endl;
-		if (!cin.fail() and Valida_ano(musicas[i].ano)) {
-			ok = true;
-		} else {
-			Mensagem_de_erro(403);
-            musicas[i].ano = 0;
-			limpaBuffer();
-            Interface(musicas[i]);
-            Enunciados(403); // Ano de lançamento
-		}
-	}
-	limpaBuffer();
-	
-    ok = false;
-    while(!ok){
+    if(!musica_inexistente){
+        ok = false;
         Interface(musicas[i]);
-        Enunciados(404); // Duração
-        getline(cin, musicas[i].duracao);
-        if (Valida_duracao(musicas[i].duracao)) {
-			ok = true;
-		} else {
-			Mensagem_de_erro(404);
-            musicas[i].duracao = "";
+        Enunciados(403); // Ano de lançamento
+        while (!ok) {
+            cin >> intermediario;
+            if (intermediario.size() <= 4 && Valida_opcao(intermediario)) {
+                musicas[i].ano = stoi(intermediario);
+                if(Valida_ano(musicas[i].ano)){
+                    ok = true;
+                }
+                else {
+                    Mensagem_de_erro(403);
+                    musicas[i].ano = 0;
+                    Interface(musicas[i]);
+                    Enunciados(403); // Ano de lançamento
+                }
+            } 
+            else {
+                Mensagem_de_erro(403);
+                musicas[i].ano = 0;
+                Interface(musicas[i]);
+                Enunciados(403); // Ano de lançamento
+            }
+        }
+        limpaBuffer();
+        
+        ok = false;
+        while(!ok){
             Interface(musicas[i]);
-            Enunciados(404); // Ano de lançamento
-		}
-    }
-	
-	ok = false;
-    Interface(musicas[i]);
-    Enunciados(405); // Número de vizualizações
-	while (!ok) {
-		cin >> musicas[i].views;
-		if (!cin.fail() and Valida_visualizacoes(musicas[i].views)) {
-			ok = true;
-		} else {
-			Mensagem_de_erro(405);
-            musicas[i].views = 0;
-			limpaBuffer();
-            Interface(musicas[i]);
-            Enunciados(405); // Ano de lançamento
-		}
+            Enunciados(404); // Duração
+            getline(cin, musicas[i].duracao);
+            if (Valida_duracao(musicas[i].duracao)) {
+                ok = true;
+            } else {
+                Mensagem_de_erro(404);
+                musicas[i].duracao = "";
+                Interface(musicas[i]);
+                Enunciados(404); // Ano de lançamento
+            }
+        }
+        
+        ok = false;
+        Interface(musicas[i]);
+        Enunciados(405); // Número de vizualizações
+        while (!ok) {
+            cin >> intermediario;
+            if (intermediario.size() <= 20 && Valida_opcao(intermediario)) {
+                musicas[i].views = stoi(intermediario);
+                if(Valida_visualizacoes(musicas[i].views)){
+                    ok = true;
+                }
+                else {
+                    Mensagem_de_erro(405);
+                    musicas[i].views = 0;
+                    Interface(musicas[i]);
+                    Enunciados(405); // views de lançamento
+                }
+            } 
+            else {
+                Mensagem_de_erro(405);
+                musicas[i].views = 0;
+                Interface(musicas[i]);
+                Enunciados(405); // Ano de lançamento
+            }
+        }
 	}
+
+    
 
     // Media de vizualizações por ano
     if(musicas[i].ano == 2025)
