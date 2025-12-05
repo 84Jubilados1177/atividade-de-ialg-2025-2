@@ -1,4 +1,7 @@
-//Alunos
+// Alunos:
+// - Isabel Valadares Pessoa
+// - Luís Eduardo Ramos Spinola
+// - Pablo dos Santos Martins
 
 #include <iostream>
 #include <iomanip>
