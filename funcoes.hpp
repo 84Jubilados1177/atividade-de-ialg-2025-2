@@ -321,6 +321,7 @@ void Salvar(Musica* musicas, int tamanho, string nome_arquivo){
         salvamento << musicas[i].media_views << ",";
         salvamento << "\"" << musicas[i].descricao << "\"\n";
     }
+    salvamento.close();
 }
 
 int Encontra_musica_para_apagar(Musica *musica, int capacidade){
