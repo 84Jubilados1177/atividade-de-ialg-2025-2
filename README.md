@@ -1,4 +1,11 @@
 # atividade-de-ialg-2025-2
+### trabalho final Ciências da computação
+
+Alunos (10A):
+
+- Isabel Valadares Pessoa
+- Luís Eduardo Ramos Spinola
+- Pablo dos Santos Martins
 
 ## Struct Musica
 
@@ -46,7 +53,7 @@ Variável do tipo STRING, que guarda a parte da música favorita da pessoa que a
     No caso da musica ser instrumental o campo deve ser preenchido como: " " [Aspas com um espaço no meio]
 
 ## Funções primárias 
-Funções primárias são aquelas chamadas diretamente na função principal, são um total de X funções, excluindo as funções-texto que serão explicadas mais detalhadamente a frente.
+Funções primárias são aquelas chamadas diretamente na função principal, são um total de X funções, excluindo as funções-texto.
 
 ### Leitura_csv():
 
@@ -290,7 +297,7 @@ Para garantir consistência na formatação da média de visualizações, a fun�
 O loop _for()_ percorre todas as músicas do vetor, gravando linha a linha no arquivo de saída, permitindo que o banco de dados seja salvo de forma organizada e pronta para ser lida novamente com a função _Leitura_csv()_.
 
 ## Funções secundárias 
-Funções secundárias são aquelas chamadas dentro de funções primárias, são um total de X funções, excluindo as funções-texto que serão explicadas mais detalhadamente a frente.
+Funções secundárias são aquelas chamadas dentro de funções primárias, são um total de X funções, excluindo as funções-texto.
 
 ### Retira_acentos():
 
